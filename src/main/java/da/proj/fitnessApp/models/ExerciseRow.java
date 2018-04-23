@@ -4,10 +4,13 @@ public class ExerciseRow {
 
 	private Long id;
 	private Integer no;
+	private Exercise exercise;
 	private String sets;
 	private String reps;
 	private String weight;
 	private String comment;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -19,6 +22,12 @@ public class ExerciseRow {
 	}
 	public void setNo(Integer no) {
 		this.no = no;
+	}
+	public Exercise getExercise() {
+		return exercise;
+	}
+	public void setExercise(Exercise exercise) {
+		this.exercise = exercise;
 	}
 	public String getSets() {
 		return sets;

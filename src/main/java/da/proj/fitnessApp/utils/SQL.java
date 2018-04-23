@@ -26,7 +26,10 @@ public class SQL {
 										 		 + ":usr_phone,"
 										 		 + ":usr_goal,"
 										 		 + ":usr_description)";
-	
+	public final static String CREATE_EXERCISE = "INSERT INTO `exercise`(`ex_name`) VALUES (:ex_name)";
+	public final static String CREATE_EXERCISE_ROW = "";
+	public final static String CREATE_TRAINING_DAY = "";
+
 	public final static String READ_USER_USERNAME = "SELECT COUNT(usr_id) AS count FROM `user` WHERE usr_username = :username";
 
 }
