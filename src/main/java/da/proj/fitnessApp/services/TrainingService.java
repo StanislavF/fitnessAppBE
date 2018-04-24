@@ -6,5 +6,5 @@ import da.proj.fitnessApp.models.Exercise;
 import da.proj.fitnessApp.models.TrainingDay;
 
 public interface TrainingService {
-	public String createExercises(List<Exercise> exercises);
+	public String createTrainingDay(TrainingDay trainingDay, String username);
 }

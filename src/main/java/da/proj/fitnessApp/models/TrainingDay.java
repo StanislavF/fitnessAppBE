@@ -1,11 +1,15 @@
 package da.proj.fitnessApp.models;
 
+import java.util.List;
+
 public class TrainingDay {
 
 	private Long id;
 	private Integer no;
 	private String title;
 	private String date;
+	private List<ExerciseRow> exercseRows;
+	
 	public Long getId() {
 		return id;
 	}
@@ -29,6 +33,12 @@ public class TrainingDay {
 	}
 	public void setDate(String date) {
 		this.date = date;
+	}
+	public List<ExerciseRow> getExercseRows() {
+		return exercseRows;
+	}
+	public void setExercseRows(List<ExerciseRow> exercseRows) {
+		this.exercseRows = exercseRows;
 	}
 	
 	
