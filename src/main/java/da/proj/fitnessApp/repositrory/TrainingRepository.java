@@ -15,5 +15,5 @@ public interface TrainingRepository {
 
 	public Long createTrainingDay(TrainingDay trainingDay, String username);
 
-	public List<Exercise> getMissingExercises(List<Exercise> exercises);
+	public List<Exercise> readAllExercises();
 }

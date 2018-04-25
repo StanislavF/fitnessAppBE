@@ -24,6 +24,8 @@ import org.springframework.stereotype.Repository;
 import da.proj.fitnessApp.models.Exercise;
 import da.proj.fitnessApp.models.ExerciseRow;
 import da.proj.fitnessApp.models.TrainingDay;
+import da.proj.fitnessApp.models.User;
+import da.proj.fitnessApp.models.enums.GoalEnum;
 import da.proj.fitnessApp.utils.SQL;
 
 @Repository
@@ -39,69 +41,66 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 
-	public void createExercises(List<Exercise> exercises){
+	public void createExercises(List<Exercise> exercises) {
 
-		try {
-			List<Map<String, String>> exerciesMap = new ArrayList<>();
+		List<Map<String, String>> exerciesMap = new ArrayList<>();
 
-			for (Exercise exercise : exercises) {
-				Map<String, String> newMap = new HashMap<String, String>();
-				newMap.put("ex_name", exercise.getName());
-				exerciesMap.add(newMap);
-			}
-
-			SqlParameterSource[] parameters = SqlParameterSourceUtils.createBatch(exerciesMap.toArray());
-
-			this.jdbcTemplate.batchUpdate(SQL.CREATE_EXERCISE, parameters);
-		} catch (Exception ex) {
-		
+		for (Exercise exercise : exercises) {
+			Map<String, String> newMap = new HashMap<String, String>();
+			newMap.put("ex_name", exercise.getName());
+			exerciesMap.add(newMap);
 		}
 
+		SqlParameterSource[] parameters = SqlParameterSourceUtils.createBatch(exerciesMap.toArray());
+
+		this.jdbcTemplate.batchUpdate(SQL.CREATE_EXERCISE, parameters);
+
+	}
+	
+	public List<Exercise> readAllExercises(){
+		
+		List<Exercise> results = new ArrayList<>();
+		this.jdbcTemplate.query(SQL.READ_ALL_EXERCISES, (rs) -> {
+			Exercise exercise = new Exercise();
+			exercise.setName(rs.getString("ex_name"));
+			results.add(exercise);
+		});
+		
+		return results;
 	}
 
 	// ToDo make for lisi
 	public void createExerciseRow(List<ExerciseRow> exerciseRows, Long td_id) {
-		
-		try {
-			List<Map<String, String>> exerciesMap = new ArrayList<>();
 
-			for (ExerciseRow exerciseRow : exerciseRows) {
-				Map<String, String> newMap = new HashMap<String, String>();
-				newMap.put("er_no", String.valueOf(exerciseRow.getNo()));
-				newMap.put("ex_name", exerciseRow.getExercise().getName());
-				newMap.put("er_sets", exerciseRow.getSets());
-				newMap.put("er_reps", exerciseRow.getReps());
-				newMap.put("er_weight", exerciseRow.getWeight());
-				newMap.put("er_comment", exerciseRow.getComment());
-				newMap.put("er_td_id", String.valueOf(td_id));
-				exerciesMap.add(newMap);
-			}
+		List<Map<String, String>> exerciesMap = new ArrayList<>();
 
-			SqlParameterSource[] parameters = SqlParameterSourceUtils.createBatch(exerciesMap.toArray());
-
-			this.jdbcTemplate.batchUpdate(SQL.CREATE_EXERCISE_ROW, parameters);
-		} catch (Exception ex) {
+		for (ExerciseRow exerciseRow : exerciseRows) {
+			Map<String, String> newMap = new HashMap<String, String>();
+			newMap.put("er_no", String.valueOf(exerciseRow.getNo()));
+			newMap.put("ex_name", exerciseRow.getExercise().getName());
+			newMap.put("er_sets", exerciseRow.getSets());
+			newMap.put("er_reps", exerciseRow.getReps());
+			newMap.put("er_weight", exerciseRow.getWeight());
+			newMap.put("er_comment", exerciseRow.getComment());
+			newMap.put("er_td_id", String.valueOf(td_id));
+			exerciesMap.add(newMap);
 		}
+
+		SqlParameterSource[] parameters = SqlParameterSourceUtils.createBatch(exerciesMap.toArray());
+
+		this.jdbcTemplate.batchUpdate(SQL.CREATE_EXERCISE_ROW, parameters);
 	}
 
-	public Long createTrainingDay(TrainingDay trainingDay, String username){
-		
+	public Long createTrainingDay(TrainingDay trainingDay, String username) {
+
 		KeyHolder keyHolder = new GeneratedKeyHolder();
-		
-		try {
-			SqlParameterSource parameters = new MapSqlParameterSource()
-					.addValue("td_no", trainingDay.getNo())
-					.addValue("td_title", trainingDay.getTitle())
-					.addValue("td_date", trainingDay.getDate())
-					.addValue("usr_username", username);
 
-			
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("td_no", trainingDay.getNo())
+				.addValue("td_title", trainingDay.getTitle()).addValue("td_date", trainingDay.getDate())
+				.addValue("usr_username", username);
 
-			this.jdbcTemplate.update(SQL.CREATE_TRAINING_DAY, parameters, keyHolder);
+		this.jdbcTemplate.update(SQL.CREATE_TRAINING_DAY, parameters, keyHolder);
 
-		} catch (Exception ex) {
-		}
-		
 		return keyHolder != null ? keyHolder.getKey().longValue() : null;
 	}
 	
@@ -139,6 +138,29 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 		}
 
 		return results;
+	}
+	
+	public List<TrainingDay> readTrainingDays(String date, String username) {
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("username", username);
+
+		return this.jdbcTemplate.queryForObject(SQL.READ_USER_USERNAME, parameters, 
+				(rs, rowNum) -> { 
+					User user = new User();
+					user.setAge(rs.getInt("usr_age"));
+					user.setUsername(rs.getString("usr_username"));
+					user.setFirstName(rs.getString("usr_firstname"));
+					user.setLastName(rs.getString("usr_lastname"));
+					user.setEmail(rs.getString("usr_email"));
+					user.setIsTrainer(rs.getBoolean("usr_is_trainer"));
+					user.setPassword(rs.getString("usr_password"));
+					user.setWheight(rs.getInt("usr_weight"));
+					user.setHeight(rs.getInt("usr_height"));
+					user.setPhone(rs.getString("usr_phone"));
+					user.setGoal(GoalEnum.valueOf(rs.getString("usr_goal")));
+					user.setDescription(rs.getString("usr_description"));
+					
+					return user;
+				});
 	}
 
 }
