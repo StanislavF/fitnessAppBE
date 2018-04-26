@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import da.proj.fitnessApp.models.LogInData;
 import da.proj.fitnessApp.models.User;
@@ -40,5 +41,20 @@ public class UserServiceImpl implements UserService {
 	public boolean existUsername(String username) {
 
 		return (this.userRepository.readUserByUsername(username) != null) ? true : false;
+	}
+	
+	@Transactional
+	public boolean isTrainerAuthorised(String trainerUsername, String clientUsername) {
+		
+		boolean is_authorised = false;
+		User trainer = this.userRepository.readUserByUsername(trainerUsername);
+		
+		if(trainer.getIsTrainer().equals(true)) {
+			is_authorised = true;
+		} else if(this.userRepository.checkTrainerClient(trainerUsername, clientUsername)) {
+			is_authorised = true;
+		}
+		
+		return is_authorised;
 	}
 }

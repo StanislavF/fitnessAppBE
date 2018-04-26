@@ -21,6 +21,10 @@ public class TrainingServiceImpl implements TrainingService {
 
 	@Transactional
 	public String createTrainingDay(TrainingDay trainingDay, String username) {
+		
+		if(trainingDay == null || username == null || username.isEmpty()) {
+			return null;
+		}
 
 		List<Exercise> exercisesToCheck = new ArrayList<>();
 		for (ExerciseRow exerciseRow : trainingDay.getExercseRows()) {
@@ -52,5 +56,27 @@ public class TrainingServiceImpl implements TrainingService {
 		}
 
 		return missingExercises;
+	}
+	
+	@Transactional
+	public List<TrainingDay> getAllTrainingDaysForUser(String date, String user){
+		
+		if(date == null || date.isEmpty() || user == null || user.isEmpty()) {
+			return null;
+		}
+		
+		List<TrainingDay> trainingDays = this.trainingRepository.readTrainingDays(date, user);
+		
+		for(TrainingDay trainingDay : trainingDays) {
+			trainingDay.setExercseRows(this.trainingRepository.readExerciseRowsForTD(trainingDay.getId()));
+		}
+		
+		return trainingDays;
+	}
+	
+	public Long deleteTrainingDay(Long trainingDayId) {
+		
+		return trainingDayId != null ? this.trainingRepository.deleteTrainingDay(trainingDayId) : null;
+		
 	}
 }

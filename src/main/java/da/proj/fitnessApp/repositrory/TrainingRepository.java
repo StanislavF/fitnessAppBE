@@ -16,4 +16,10 @@ public interface TrainingRepository {
 	public Long createTrainingDay(TrainingDay trainingDay, String username);
 
 	public List<Exercise> readAllExercises();
+	
+	public List<TrainingDay> readTrainingDays(String date, String user);
+	
+	public List<ExerciseRow> readExerciseRowsForTD(Long trainingDayId);
+	
+	public Long deleteTrainingDay(Long trainingDayId);
 }

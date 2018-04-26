@@ -77,4 +77,18 @@ public class UserRepositoryImpl implements UserRepository {
 				});
 
 	}
+	
+	public boolean checkTrainerClient(String trainserUsername, String clientUsername) {
+		
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("trainer_username", trainserUsername)
+				.addValue("client_username", clientUsername)
+				.addValue("tc_request_status", "ACCEPTED");
+		
+		return this.jdbcTemplate.queryForObject(SQL.CHECK_TRAINER_CLIENT, parameters, 
+				(rs, rowNum) -> { 
+					return rowNum > 0 ? true : false;
+				});
+		
+	}
 }
