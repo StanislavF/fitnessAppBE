@@ -11,52 +11,51 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import da.proj.fitnessApp.models.Exercise;
-import da.proj.fitnessApp.models.TrainingDay;
-import da.proj.fitnessApp.services.TrainingService;
+import da.proj.fitnessApp.models.SingleMeal;
+import da.proj.fitnessApp.services.MealService;
 import da.proj.fitnessApp.services.UserService;
 
 @RestController
-@RequestMapping("/training-day")
-public class TrainingController {
+@RequestMapping("/single-meal")
+public class MealController {
 
 	@Autowired
-	private TrainingService trainingService;
+	private MealService mealService;
 
 	@Autowired
 	private UserService userService;
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public ResponseEntity<String> createTrainingDay(@RequestBody TrainingDay trainingDay,
+	public ResponseEntity<String> createSingleMeal(@RequestBody SingleMeal singleMeal,
 			@RequestParam("trainerUsername") String trainerUsername, @RequestParam("username") String clientUsername) {
 
 		String responseText;
 
-		responseText = this.trainingService.createTrainingDay(trainingDay, clientUsername, trainerUsername);
+		responseText = this.mealService.createSingleMeal(singleMeal, clientUsername, trainerUsername);
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
 				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
 	}
 
 	@RequestMapping(value = "/get", method = RequestMethod.GET)
-	public ResponseEntity<List<TrainingDay>> getTrainingDays(@RequestParam("trainerUsername") String trainerUsername,
+	public ResponseEntity<List<SingleMeal>> getSingleMeals(@RequestParam("trainerUsername") String trainerUsername,
 			@RequestParam("clientUsername") String clientUsername, @RequestParam("date") String date) {
 
 		if (this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
-			return new ResponseEntity<List<TrainingDay>>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<List<SingleMeal>>(HttpStatus.UNAUTHORIZED);
 		}
 
-		List<TrainingDay> response;
+		List<SingleMeal> response;
 
-		response = this.trainingService.getAllTrainingDaysForUser(date, clientUsername, trainerUsername);
+		response = this.mealService.getAllSingleMealsForUser(date, clientUsername, trainerUsername);
 
-		return response != null ? new ResponseEntity<List<TrainingDay>>(response, HttpStatus.OK)
-				: new ResponseEntity<List<TrainingDay>>(response, HttpStatus.NOT_FOUND);
+		return response != null ? new ResponseEntity<List<SingleMeal>>(response, HttpStatus.OK)
+				: new ResponseEntity<List<SingleMeal>>(response, HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-	public ResponseEntity<String> deleteTrainingDay(@RequestParam("trainerUsername") String trainerUsername,
-			@RequestParam("clientUsername") String clientUsername, @RequestParam("trainingDayId") Long trainingDayId) {
+	public ResponseEntity<String> deleteSingleMeal(@RequestParam("trainerUsername") String trainerUsername,
+			@RequestParam("clientUsername") String clientUsername, @RequestParam("SingleMealId") Long SingleMealId) {
 
 		if (this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -64,9 +63,9 @@ public class TrainingController {
 
 		Long deletedTdId;
 
-		deletedTdId = this.trainingService.deleteTrainingDay(trainingDayId);
+		deletedTdId = this.mealService.deleteSingleMeal(SingleMealId);
 
 		return deletedTdId != null ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-
+	
 }

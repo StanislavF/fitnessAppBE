@@ -32,14 +32,7 @@ import da.proj.fitnessApp.utils.SQL;
 public class TrainingRepositoryImpl implements TrainingRepository {
 
 	@Autowired
-	private DataSource dataSource;
-
 	private NamedParameterJdbcTemplate jdbcTemplate;
-
-	@PostConstruct
-	private void postConstruct() {
-		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-	}
 
 	public void createExercises(List<Exercise> exercises) {
 
@@ -91,25 +84,26 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 		this.jdbcTemplate.batchUpdate(SQL.CREATE_EXERCISE_ROW, parameters);
 	}
 
-	public Long createTrainingDay(TrainingDay trainingDay, String username) {
+	public Long createTrainingDay(TrainingDay trainingDay, Long clientId, Long trainerId) {
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 
 		SqlParameterSource parameters = new MapSqlParameterSource().addValue("td_no", trainingDay.getNo())
 				.addValue("td_title", trainingDay.getTitle()).addValue("td_date", trainingDay.getDate())
-				.addValue("usr_username", username);
+				.addValue("td_client_id", clientId).addValue("td_trainer_id", trainerId);
 
 		this.jdbcTemplate.update(SQL.CREATE_TRAINING_DAY, parameters, keyHolder);
 
 		return keyHolder != null ? keyHolder.getKey().longValue() : null;
 	}
 	
-	public List<TrainingDay> readTrainingDays(String date, String username) {
+	public List<TrainingDay> readTrainingDays(String date, Long clientId, Long trainerId) {
 		
 		List<TrainingDay> results = new ArrayList<>();
 		
 		SqlParameterSource parameters = new MapSqlParameterSource()
-				.addValue("usr_username", username)
+				.addValue("td_client_id", clientId)
+				.addValue("td_trainer_id", trainerId)
 				.addValue("td_date", date);
 
 		this.jdbcTemplate.query(SQL.READ_TD_USER, parameters, 

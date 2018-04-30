@@ -6,9 +6,9 @@ import da.proj.fitnessApp.models.Exercise;
 import da.proj.fitnessApp.models.TrainingDay;
 
 public interface TrainingService {
-	public String createTrainingDay(TrainingDay trainingDay, String username);
+	String createTrainingDay(TrainingDay trainingDay, String clientUsername, String trainerUsername);
 	
-	public List<TrainingDay> getAllTrainingDaysForUser(String date, String user);
+	public List<TrainingDay> getAllTrainingDaysForUser(String date, String clientUsername, String trainerUsername);
 	
 	public Long deleteTrainingDay(Long trainingDayId);
 }

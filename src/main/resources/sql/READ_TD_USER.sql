@@ -1,5 +1,5 @@
 SELECT * 
 FROM `training_day` 
-INNER JOIN user ON training_day.td_usr_id = user.usr_id
-WHERE user.usr_username = :usr_username 
+WHERE td_client_id = :td_client_id,
+	AND td_trainer_id = :td_trainer_id,
 	AND training_day.td_date = :td_date

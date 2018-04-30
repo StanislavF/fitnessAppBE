@@ -1,6 +1,5 @@
 package da.proj.fitnessApp.repositrory;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import da.proj.fitnessApp.models.Exercise;
@@ -11,15 +10,15 @@ public interface TrainingRepository {
 
 	void createExercises(List<Exercise> exercise);
 
-	public void createExerciseRow(List<ExerciseRow> exerciseRows, Long td_id);
+	void createExerciseRow(List<ExerciseRow> exerciseRows, Long td_id);
 
-	public Long createTrainingDay(TrainingDay trainingDay, String username);
+	Long createTrainingDay(TrainingDay trainingDay, Long clientId, Long trainerId);
 
-	public List<Exercise> readAllExercises();
+	List<Exercise> readAllExercises();
 	
-	public List<TrainingDay> readTrainingDays(String date, String user);
+	List<TrainingDay> readTrainingDays(String date, Long clientId, Long trainerId);
 	
-	public List<ExerciseRow> readExerciseRowsForTD(Long trainingDayId);
+	List<ExerciseRow> readExerciseRowsForTD(Long trainingDayId);
 	
-	public Long deleteTrainingDay(Long trainingDayId);
+	Long deleteTrainingDay(Long trainingDayId);
 }

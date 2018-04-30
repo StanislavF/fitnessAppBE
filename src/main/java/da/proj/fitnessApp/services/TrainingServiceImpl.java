@@ -11,18 +11,24 @@ import org.springframework.transaction.annotation.Transactional;
 import da.proj.fitnessApp.models.Exercise;
 import da.proj.fitnessApp.models.ExerciseRow;
 import da.proj.fitnessApp.models.TrainingDay;
+import da.proj.fitnessApp.models.User;
 import da.proj.fitnessApp.repositrory.TrainingRepository;
+import da.proj.fitnessApp.repositrory.UserRepository;
 
 @Service
 public class TrainingServiceImpl implements TrainingService {
 
 	@Autowired
 	private TrainingRepository trainingRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	@Transactional
-	public String createTrainingDay(TrainingDay trainingDay, String username) {
+	public String createTrainingDay(TrainingDay trainingDay, String clientUsername, String trainerUsername) {
 		
-		if(trainingDay == null || username == null || username.isEmpty()) {
+		if(trainingDay == null || clientUsername == null || clientUsername.isEmpty()
+				|| trainerUsername == null || trainerUsername.isEmpty()) {
 			return null;
 		}
 
@@ -36,8 +42,11 @@ public class TrainingServiceImpl implements TrainingService {
 		List<Exercise> missingExercises = this.findMissingExercises(exercisesToCheck, allExercises);
 
 		this.trainingRepository.createExercises(missingExercises);
+		
+		User trainer = this.userRepository.readUserByUsername(trainerUsername);
+		User client = this.userRepository.readUserByUsername(clientUsername);
 
-		Long trainingDayId = this.trainingRepository.createTrainingDay(trainingDay, username);
+		Long trainingDayId = this.trainingRepository.createTrainingDay(trainingDay, client.getId(), trainer.getId());
 
 		this.trainingRepository.createExerciseRow(trainingDay.getExercseRows(), trainingDayId);
 
@@ -59,13 +68,17 @@ public class TrainingServiceImpl implements TrainingService {
 	}
 	
 	@Transactional
-	public List<TrainingDay> getAllTrainingDaysForUser(String date, String user){
+	public List<TrainingDay> getAllTrainingDaysForUser(String date, String clientUsername, String trainerUsername){
 		
-		if(date == null || date.isEmpty() || user == null || user.isEmpty()) {
+		if(date == null || date.isEmpty() || clientUsername == null || clientUsername.isEmpty()
+				|| trainerUsername == null || trainerUsername.isEmpty()) {
 			return null;
 		}
 		
-		List<TrainingDay> trainingDays = this.trainingRepository.readTrainingDays(date, user);
+		User client = this.userRepository.readUserByUsername(clientUsername);
+		User trainer = this.userRepository.readUserByUsername(trainerUsername);
+		
+		List<TrainingDay> trainingDays = this.trainingRepository.readTrainingDays(date, client.getId(), trainer.getId());
 		
 		for(TrainingDay trainingDay : trainingDays) {
 			trainingDay.setExercseRows(this.trainingRepository.readExerciseRowsForTD(trainingDay.getId()));
