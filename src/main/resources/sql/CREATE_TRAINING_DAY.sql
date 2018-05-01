@@ -1,12 +1,21 @@
-INSERT INTO `training_day`( `td_id`, 
-							`td_no`, 
-							`td_title`, 
-							`td_date`, 
-							`td_client_id`,
-							`td_trainer_id`) 
-VALUES (:td_id, 
-		:td_no, 
-		:td_title, 
-		:td_date, 
-		:td_client_id,
-		:td_trainer_id)
+INSERT INTO `single_meal`(  `sm_id`, 
+							`sm_no`, 
+							`sm_title`, 
+							`sm_client_id`, 
+							`sm_trainer_id`, 
+							`sm_date`, 
+							`sm_calories`, 
+							`sm_proteins`, 
+							`sm_carbs`, 
+							`sm_fats`) 
+							
+				  VALUES (  :sm_id, 
+							:sm_no, 
+							:sm_title, 
+							:sm_client_id, 
+							:sm_trainer_id, 
+							:sm_date,
+							:sm_calories, 
+							:sm_proteins, 
+							:sm_carbs, 
+							:sm_fats) 

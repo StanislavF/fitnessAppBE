@@ -10,7 +10,7 @@ public class FoodRow {
 	private Integer proteins;
 	private Integer carbs;
 	private Integer fats;
-	private String comments;
+	private String comment;
 	
 	public Long getId() {
 		return id;
@@ -60,11 +60,11 @@ public class FoodRow {
 	public void setFats(Integer fats) {
 		this.fats = fats;
 	}
-	public String getComments() {
-		return comments;
+	public String getComment() {
+		return comment;
 	}
-	public void setComments(String comments) {
-		this.comments = comments;
+	public void setComment(String comments) {
+		this.comment = comments;
 	}
 	
 	

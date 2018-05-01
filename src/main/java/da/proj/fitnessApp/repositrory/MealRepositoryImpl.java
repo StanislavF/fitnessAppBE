@@ -6,15 +6,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import da.proj.fitnessApp.models.Exercise;
 import da.proj.fitnessApp.models.ExerciseRow;
 import da.proj.fitnessApp.models.Food;
 import da.proj.fitnessApp.models.FoodRow;
 import da.proj.fitnessApp.models.SingleMeal;
+import da.proj.fitnessApp.models.TrainingDay;
 import da.proj.fitnessApp.utils.SQL;
 
 public class MealRepositoryImpl implements MealRepository {
@@ -23,7 +27,7 @@ public class MealRepositoryImpl implements MealRepository {
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	
 	@Override
-	public void createFood(List<Food> foods) {
+	public void createFoods(List<Food> foods) {
 		List<Map<String, String>> exerciesMap = new ArrayList<>();
 
 		for (Food food : foods) {
@@ -57,13 +61,22 @@ public class MealRepositoryImpl implements MealRepository {
 
 		SqlParameterSource[] parameters = SqlParameterSourceUtils.createBatch(exerciesMap.toArray());
 
-		this.jdbcTemplate.batchUpdate(SQL.CREATE_EXERCISE_ROW, parameters);
+		this.jdbcTemplate.batchUpdate(SQL.CREATE_FOOD_ROW, parameters);
 	}
 
 	@Override
 	public Long createSingleMeal(SingleMeal singleMeal, Long clientId, Long trainerId) {
-		// TODO Auto-generated method stub
-		return null;
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("sm_no", singleMeal.getNo())
+				.addValue("sm_title", singleMeal.getTitle()).addValue("sm_date", singleMeal.getDate())
+				.addValue("sm_calories", singleMeal.getCalories()).addValue("sm_proteins", singleMeal.getProteins())
+				.addValue("sm_carbs", singleMeal.getCarbs()).addValue("sm_fats", singleMeal.getFats())
+				.addValue("sm_client_id", clientId).addValue("sm_trainer_id", trainerId);
+
+		this.jdbcTemplate.update(SQL.CREATE_SINGLE_MEAL, parameters, keyHolder);
+
+		return keyHolder != null ? keyHolder.getKey().longValue() : null;
 	}
 
 	@Override
@@ -80,20 +93,65 @@ public class MealRepositoryImpl implements MealRepository {
 
 	@Override
 	public List<SingleMeal> readSingleMeals(String date, Long clientId, Long trainerId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<SingleMeal> results = new ArrayList<>();
+		
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("sm_client_id", clientId)
+				.addValue("sm_trainer_id", trainerId)
+				.addValue("sm_date", date);
+
+		this.jdbcTemplate.query(SQL.READ_SM_USER, parameters, 
+				(rs) -> { 
+					SingleMeal singleMeal = new SingleMeal();
+					singleMeal.setDate(rs.getString("sm_date"));
+					singleMeal.setId(rs.getLong("sm_id"));
+					singleMeal.setNo(rs.getInt("sm_no"));
+					singleMeal.setTitle(rs.getString("sm_title"));
+					singleMeal.setCalories(rs.getInt("sm_calories"));
+					singleMeal.setProteins(rs.getInt("sm_proteins"));
+					singleMeal.setCarbs(rs.getInt("sm_carbs"));
+					singleMeal.setFats(rs.getInt("sm_fats"));
+					results.add(singleMeal);
+				});
+		
+		return results;
 	}
 
 	@Override
 	public List<FoodRow> readFoodRowsForSM(Long singleMealId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<FoodRow> results = new ArrayList<>();
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("fr_sm_id", singleMealId);
+
+		this.jdbcTemplate.query(SQL.READ_ALL_FOOD_ROWS, parameters, (rs) -> {
+			FoodRow foodRow = new FoodRow();
+			foodRow.setComment(rs.getString("fr_comment"));
+			Food food = new Food();
+			food.setName(rs.getString("fd_name"));
+			foodRow.setFood(food);
+			foodRow.setId(rs.getLong("fr_id"));
+			foodRow.setNo(rs.getInt("fr_no"));
+			foodRow.setWeight(rs.getString("fr_weight"));
+			foodRow.setCalories(rs.getInt("fr_calories"));
+			foodRow.setProteins(rs.getInt("fr_proteins"));
+			foodRow.setCarbs(rs.getInt("fr_carbs"));
+			foodRow.setFats(rs.getInt("fr_fats"));
+			results.add(foodRow);
+
+		});
+
+		return results;
 	}
 
 	@Override
 	public Long deleteSingleMeal(Long singleMealId) {
-		// TODO Auto-generated method stub
-		return null;
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("sm_id", singleMealId);
+
+		this.jdbcTemplate.update(SQL.DELETE_SINGLE_MEAL, parameters, keyHolder);
+
+		return keyHolder != null ? keyHolder.getKey().longValue() : null;
 	}
 
 }

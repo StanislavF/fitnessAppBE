@@ -8,7 +8,7 @@ import da.proj.fitnessApp.models.SingleMeal;
 
 public interface MealRepository {
 	
-	void createFood(List<Food> foods);
+	void createFoods(List<Food> foods);
 
 	void createFoodRow(List<FoodRow> foodRows, Long sm_id);
 

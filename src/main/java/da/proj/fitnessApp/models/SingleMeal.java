@@ -1,5 +1,7 @@
 package da.proj.fitnessApp.models;
 
+import java.util.List;
+
 public class SingleMeal {
 
 	private Long id;
@@ -10,6 +12,7 @@ public class SingleMeal {
 	private Integer proteins;
 	private Integer carbs;
 	private Integer fats;
+	private List<FoodRow> foodRows;
 	
 	public Long getId() {
 		return id;
@@ -59,5 +62,12 @@ public class SingleMeal {
 	public void setFats(Integer fats) {
 		this.fats = fats;
 	}
+	public List<FoodRow> getFoodRows() {
+		return foodRows;
+	}
+	public void setFoodRows(List<FoodRow> foodRows) {
+		this.foodRows = foodRows;
+	}
+	
 	
 }
