@@ -20,29 +20,20 @@ public class TrainingServiceImpl implements TrainingService {
 
 	@Autowired
 	private TrainingRepository trainingRepository;
-	
+
 	@Autowired
 	private UserRepository userRepository;
 
 	@Transactional
 	public String createTrainingDay(TrainingDay trainingDay, String clientUsername, String trainerUsername) {
-		
-		if(trainingDay == null || clientUsername == null || clientUsername.isEmpty()
-				|| trainerUsername == null || trainerUsername.isEmpty()) {
+
+		if (trainingDay == null || clientUsername == null || clientUsername.isEmpty() || trainerUsername == null
+				|| trainerUsername.isEmpty()) {
 			return null;
 		}
 
-		List<Exercise> exercisesToCheck = new ArrayList<>();
-		for (ExerciseRow exerciseRow : trainingDay.getExercseRows()) {
-			exercisesToCheck.add(exerciseRow.getExercise());
-		}
+		this.safeMissingExercises(trainingDay.getExercseRows());
 
-		List<Exercise> allExercises = this.trainingRepository.readAllExercises();
-
-		List<Exercise> missingExercises = this.findMissingExercises(exercisesToCheck, allExercises);
-
-		this.trainingRepository.createExercises(missingExercises);
-		
 		User trainer = this.userRepository.readUserByUsername(trainerUsername);
 		User client = this.userRepository.readUserByUsername(clientUsername);
 
@@ -51,6 +42,63 @@ public class TrainingServiceImpl implements TrainingService {
 		this.trainingRepository.createExerciseRow(trainingDay.getExercseRows(), trainingDayId);
 
 		return "CREATED";
+
+	}
+
+	@Transactional
+	public List<TrainingDay> getAllTrainingDaysForUser(String date, String clientUsername, String trainerUsername) {
+
+		if (date == null || date.isEmpty() || clientUsername == null || clientUsername.isEmpty()
+				|| trainerUsername == null || trainerUsername.isEmpty()) {
+			return null;
+		}
+
+		User client = this.userRepository.readUserByUsername(clientUsername);
+		User trainer = this.userRepository.readUserByUsername(trainerUsername);
+
+		List<TrainingDay> trainingDays = this.trainingRepository.readTrainingDays(date, client.getId(),
+				trainer.getId());
+
+		for (TrainingDay trainingDay : trainingDays) {
+			trainingDay.setExercseRows(this.trainingRepository.readExerciseRowsForTD(trainingDay.getId()));
+		}
+
+		return trainingDays;
+	}
+
+	public Long deleteTrainingDay(Long trainingDayId) {
+
+		return trainingDayId != null ? this.trainingRepository.deleteTrainingDay(trainingDayId) : null;
+
+	}
+
+	@Transactional
+	public String updateTrainingDay(TrainingDay newTrainingDay, Long oldTrainingDayId, String clientUsername, String trainerUsername) {
+
+		this.deleteTrainingDay(oldTrainingDayId);
+		
+		return this.createTrainingDay(newTrainingDay, clientUsername, trainerUsername);
+
+	}
+
+	private void safeMissingExercises(List<ExerciseRow> exerciseRows) {
+
+		if(exerciseRows == null || exerciseRows.isEmpty()) {
+			return;
+		}
+		
+		List<Exercise> exercisesToCheck = new ArrayList<>();
+		for (ExerciseRow exerciseRow : exerciseRows) {
+			exercisesToCheck.add(exerciseRow.getExercise());
+		}
+
+		List<Exercise> allExercises = this.trainingRepository.readAllExercises();
+
+		List<Exercise> missingExercises = this.findMissingExercises(exercisesToCheck, allExercises);
+
+		if (missingExercises != null && !missingExercises.isEmpty()) {
+			this.trainingRepository.createExercises(missingExercises);
+		}
 
 	}
 
@@ -65,31 +113,5 @@ public class TrainingServiceImpl implements TrainingService {
 		}
 
 		return missingExercises;
-	}
-	
-	@Transactional
-	public List<TrainingDay> getAllTrainingDaysForUser(String date, String clientUsername, String trainerUsername){
-		
-		if(date == null || date.isEmpty() || clientUsername == null || clientUsername.isEmpty()
-				|| trainerUsername == null || trainerUsername.isEmpty()) {
-			return null;
-		}
-		
-		User client = this.userRepository.readUserByUsername(clientUsername);
-		User trainer = this.userRepository.readUserByUsername(trainerUsername);
-		
-		List<TrainingDay> trainingDays = this.trainingRepository.readTrainingDays(date, client.getId(), trainer.getId());
-		
-		for(TrainingDay trainingDay : trainingDays) {
-			trainingDay.setExercseRows(this.trainingRepository.readExerciseRowsForTD(trainingDay.getId()));
-		}
-		
-		return trainingDays;
-	}
-	
-	public Long deleteTrainingDay(Long trainingDayId) {
-		
-		return trainingDayId != null ? this.trainingRepository.deleteTrainingDay(trainingDayId) : null;
-		
 	}
 }

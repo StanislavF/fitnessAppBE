@@ -30,9 +30,7 @@ public class TrainingController {
 	public ResponseEntity<String> createTrainingDay(@RequestBody TrainingDay trainingDay,
 			@RequestParam("trainerUsername") String trainerUsername, @RequestParam("username") String clientUsername) {
 
-		String responseText;
-
-		responseText = this.trainingService.createTrainingDay(trainingDay, clientUsername, trainerUsername);
+		String responseText = this.trainingService.createTrainingDay(trainingDay, clientUsername, trainerUsername);
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
 				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
@@ -46,15 +44,14 @@ public class TrainingController {
 			return new ResponseEntity<List<TrainingDay>>(HttpStatus.UNAUTHORIZED);
 		}
 
-		List<TrainingDay> response;
-
-		response = this.trainingService.getAllTrainingDaysForUser(date, clientUsername, trainerUsername);
+		List<TrainingDay> response = this.trainingService.getAllTrainingDaysForUser(date, clientUsername,
+				trainerUsername);
 
 		return response != null ? new ResponseEntity<List<TrainingDay>>(response, HttpStatus.OK)
 				: new ResponseEntity<List<TrainingDay>>(response, HttpStatus.NOT_FOUND);
 	}
 
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteTrainingDay(@RequestParam("trainerUsername") String trainerUsername,
 			@RequestParam("clientUsername") String clientUsername, @RequestParam("trainingDayId") Long trainingDayId) {
 
@@ -62,11 +59,20 @@ public class TrainingController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		Long deletedTdId;
-
-		deletedTdId = this.trainingService.deleteTrainingDay(trainingDayId);
+		Long deletedTdId = this.trainingService.deleteTrainingDay(trainingDayId);
 
 		return deletedTdId != null ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@RequestMapping(value = "/update", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateTrainingDay(@RequestBody TrainingDay newTrainingDay,
+			@RequestParam("oldTrainingDayId") Long oldTrainingDayId,
+			@RequestParam("trainerUsername") String trainerUsername, @RequestParam("username") String clientUsername) {
+
+		String responseText = this.trainingService.updateTrainingDay(newTrainingDay, oldTrainingDayId, clientUsername, trainerUsername);
+
+		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
+				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
 	}
 
 }

@@ -1,3 +1,3 @@
-SELECT COUNT(usr_id) AS count 
+SELECT * 
 FROM `user` 
 WHERE usr_username = :username

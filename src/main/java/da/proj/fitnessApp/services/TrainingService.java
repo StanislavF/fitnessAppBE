@@ -11,4 +11,6 @@ public interface TrainingService {
 	public List<TrainingDay> getAllTrainingDaysForUser(String date, String clientUsername, String trainerUsername);
 	
 	public Long deleteTrainingDay(Long trainingDayId);
+	
+	String updateTrainingDay(TrainingDay newTrainingDay, Long oldTrainingDayId, String clientUsername, String trainerUsername);
 }

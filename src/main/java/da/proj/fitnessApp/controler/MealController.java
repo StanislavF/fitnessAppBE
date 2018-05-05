@@ -29,9 +29,7 @@ public class MealController {
 	public ResponseEntity<String> createSingleMeal(@RequestBody SingleMeal singleMeal,
 			@RequestParam("trainerUsername") String trainerUsername, @RequestParam("username") String clientUsername) {
 
-		String responseText;
-
-		responseText = this.mealService.createSingleMeal(singleMeal, clientUsername, trainerUsername);
+		String responseText = this.mealService.createSingleMeal(singleMeal, clientUsername, trainerUsername);
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
 				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
@@ -45,15 +43,13 @@ public class MealController {
 			return new ResponseEntity<List<SingleMeal>>(HttpStatus.UNAUTHORIZED);
 		}
 
-		List<SingleMeal> response;
-
-		response = this.mealService.getAllSingleMealsForUser(date, clientUsername, trainerUsername);
+		List<SingleMeal> response = this.mealService.getAllSingleMealsForUser(date, clientUsername, trainerUsername);
 
 		return response != null ? new ResponseEntity<List<SingleMeal>>(response, HttpStatus.OK)
 				: new ResponseEntity<List<SingleMeal>>(response, HttpStatus.NOT_FOUND);
 	}
 
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	public ResponseEntity<String> deleteSingleMeal(@RequestParam("trainerUsername") String trainerUsername,
 			@RequestParam("clientUsername") String clientUsername, @RequestParam("SingleMealId") Long SingleMealId) {
 
@@ -67,5 +63,17 @@ public class MealController {
 
 		return deletedTdId != null ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
+	@RequestMapping(value = "/update", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateSingleMeal(@RequestBody SingleMeal newSingleMeal,
+			@RequestParam("oldSingleMealId") Long oldSingleMealId,
+			@RequestParam("clientUsername") String clientUsername,
+			@RequestParam("trainerUsername") String trainerUsername) {
+
+		String responseText = this.mealService.updateSingleMeal(newSingleMeal, oldSingleMealId, clientUsername, trainerUsername);
+
+		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
+				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
+	}
+
 }

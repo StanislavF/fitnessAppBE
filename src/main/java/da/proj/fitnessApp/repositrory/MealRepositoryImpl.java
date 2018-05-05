@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
 import da.proj.fitnessApp.models.Exercise;
 import da.proj.fitnessApp.models.ExerciseRow;
@@ -21,6 +22,7 @@ import da.proj.fitnessApp.models.SingleMeal;
 import da.proj.fitnessApp.models.TrainingDay;
 import da.proj.fitnessApp.utils.SQL;
 
+@Repository
 public class MealRepositoryImpl implements MealRepository {
 
 	@Autowired

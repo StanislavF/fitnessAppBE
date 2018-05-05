@@ -1,5 +1,9 @@
 package da.proj.fitnessApp.repositrory;
 
+import java.util.List;
+
+import da.proj.fitnessApp.models.SearchData;
+import da.proj.fitnessApp.models.SearchUser;
 import da.proj.fitnessApp.models.User;
 
 public interface UserRepository {
@@ -7,5 +11,7 @@ public interface UserRepository {
 	
 	User readUserByUsername (String username);
 	
-	public boolean checkTrainerClient(String trainserUsername, String clientUsername);
+	boolean checkTrainerClient(String trainserUsername, String clientUsername);
+	
+	List<SearchUser> readUsers(SearchData data);
 }

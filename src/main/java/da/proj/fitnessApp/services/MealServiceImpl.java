@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import da.proj.fitnessApp.models.Food;
@@ -14,6 +15,7 @@ import da.proj.fitnessApp.repositrory.MealRepository;
 import da.proj.fitnessApp.repositrory.TrainingRepository;
 import da.proj.fitnessApp.repositrory.UserRepository;
 
+@Service
 public class MealServiceImpl implements MealService {
 
 	@Autowired
@@ -31,16 +33,7 @@ public class MealServiceImpl implements MealService {
 			return null;
 		}
 
-		List<Food> foodsToCheck = new ArrayList<>();
-		for (FoodRow foodRow : singleMeal.getFoodRows()) {
-			foodsToCheck.add(foodRow.getFood());
-		}
-
-		List<Food> allFoods = this.mealRepository.readAllFoods();
-
-		List<Food> missingFoods = this.findMissingFoods(foodsToCheck, allFoods);
-
-		this.mealRepository.createFoods(missingFoods);
+		this.addMissingFoods(singleMeal.getFoodRows());
 
 		User trainer = this.userRepository.readUserByUsername(trainerUsername);
 		User client = this.userRepository.readUserByUsername(clientUsername);
@@ -50,19 +43,6 @@ public class MealServiceImpl implements MealService {
 		this.mealRepository.createFoodRow(singleMeal.getFoodRows(), singleMealId);
 
 		return "CREATED";
-	}
-	
-	private List<Food> findMissingFoods(List<Food> currentFoods, List<Food> allFoods) {
-
-		List<Food> missingFoods = new ArrayList<>();
-
-		for (Food food : currentFoods) {
-			if (allFoods.indexOf(food) == -1) {
-				missingFoods.add(food);
-			}
-		}
-
-		return missingFoods;
 	}
 
 	@Override
@@ -88,6 +68,46 @@ public class MealServiceImpl implements MealService {
 	public Long deleteSingleMeal(Long singleMeal) {
 		
 		return singleMeal != null ? this.mealRepository.deleteSingleMeal(singleMeal) : null;
+	}
+	
+	@Override
+	@Transactional
+	public String updateSingleMeal(SingleMeal newSingleMeal, Long oldSingleMealId, String clientUsername, String trainerUsername) {
+	
+		this.deleteSingleMeal(oldSingleMealId);
+		
+		return this.createSingleMeal(newSingleMeal, clientUsername, trainerUsername);
+	}
+	
+	private void addMissingFoods(List<FoodRow> foodRows) {
+		
+		if(foodRows == null || foodRows.isEmpty()) {
+			return;
+		}
+		
+		List<Food> foodsToCheck = new ArrayList<>();
+		for (FoodRow foodRow : foodRows) {
+			foodsToCheck.add(foodRow.getFood());
+		}
+
+		List<Food> allFoods = this.mealRepository.readAllFoods();
+
+		List<Food> missingFoods = this.findMissingFoods(foodsToCheck, allFoods);
+
+		this.mealRepository.createFoods(missingFoods);
+	}
+	
+	private List<Food> findMissingFoods(List<Food> currentFoods, List<Food> allFoods) {
+
+		List<Food> missingFoods = new ArrayList<>();
+
+		for (Food food : currentFoods) {
+			if (allFoods.indexOf(food) == -1) {
+				missingFoods.add(food);
+			}
+		}
+
+		return missingFoods;
 	}
 
 }

@@ -1,5 +1,7 @@
 package da.proj.fitnessApp.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import da.proj.fitnessApp.models.LogInData;
+import da.proj.fitnessApp.models.SearchData;
+import da.proj.fitnessApp.models.SearchUser;
 import da.proj.fitnessApp.models.User;
 import da.proj.fitnessApp.repositrory.UserRepository;
 
@@ -56,5 +60,14 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		return is_authorised;
+	}
+	
+	public List<SearchUser> searchUsers(SearchData data){
+		
+		if(data == null) {
+			return null;
+		}
+		
+		return this.userRepository.readUsers(data);
 	}
 }

@@ -1,5 +1,7 @@
 package da.proj.fitnessApp.controler;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import da.proj.fitnessApp.models.LogInData;
+import da.proj.fitnessApp.models.SearchData;
+import da.proj.fitnessApp.models.SearchUser;
 import da.proj.fitnessApp.models.User;
 import da.proj.fitnessApp.services.UserService;
 
@@ -18,7 +22,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<String> index(@RequestBody User user) {
 
 		String responseText;
@@ -30,16 +34,26 @@ public class UserController {
 
 		responseText = this.userService.registerUser(user);
 
-		return new ResponseEntity<String>(responseText, HttpStatus.OK);
+		ResponseEntity<String> response = new ResponseEntity<String>(responseText, HttpStatus.OK);
+		return response;
 	}
 
-	@RequestMapping(value = "/log-in", method = RequestMethod.GET)
+	@RequestMapping(value = "/log-in", method = RequestMethod.POST)
 	public ResponseEntity<LogInData> index(@RequestBody LogInData data) {
 
 		LogInData responseData = this.userService.logIn(data);
 
 		return (responseData != null) ? new ResponseEntity<>(responseData, HttpStatus.OK)
 				: new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	}
+	
+	@RequestMapping(value = "/search-user", method = RequestMethod.POST)
+	public ResponseEntity<List<SearchUser>> searchUser(@RequestBody SearchData data) {
+
+		List<SearchUser> responseData = this.userService.searchUsers(data);
+
+		return (responseData != null) ? new ResponseEntity<>(responseData, HttpStatus.OK)
+				: new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
 }
