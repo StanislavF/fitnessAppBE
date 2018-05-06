@@ -8,11 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import da.proj.fitnessApp.models.LogInData;
 import da.proj.fitnessApp.models.SearchData;
 import da.proj.fitnessApp.models.SearchUser;
+import da.proj.fitnessApp.models.SingleMeal;
 import da.proj.fitnessApp.models.User;
 import da.proj.fitnessApp.services.UserService;
 
@@ -23,7 +25,7 @@ public class UserController {
 	private UserService userService;
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public ResponseEntity<String> index(@RequestBody User user) {
+	public ResponseEntity<String> register(@RequestBody User user) {
 
 		String responseText;
 
@@ -39,7 +41,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/log-in", method = RequestMethod.POST)
-	public ResponseEntity<LogInData> index(@RequestBody LogInData data) {
+	public ResponseEntity<LogInData> logIn(@RequestBody LogInData data) {
 
 		LogInData responseData = this.userService.logIn(data);
 
@@ -54,6 +56,16 @@ public class UserController {
 
 		return (responseData != null) ? new ResponseEntity<>(responseData, HttpStatus.OK)
 				: new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+	
+	@RequestMapping(value = "/request-trainer", method = RequestMethod.GET)
+	public ResponseEntity<String> requestTrainer(@RequestParam String trainerUsername,
+			@RequestParam String clientUsername) {
+
+		String responseText = this.userService.requestTrainer(clientUsername, trainerUsername);
+
+		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
+				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
 	}
 
 }

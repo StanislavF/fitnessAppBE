@@ -70,4 +70,20 @@ public class UserServiceImpl implements UserService {
 		
 		return this.userRepository.readUsers(data);
 	}
+	
+	@Transactional
+	public String requestTrainer(String clientUsername, String trainerUsername) {
+		
+		if (clientUsername == null || clientUsername.isEmpty() || trainerUsername == null
+				|| trainerUsername.isEmpty()) {
+			return null;
+		}
+		
+		Long clientId = this.userRepository.readUserByUsername(clientUsername).getId();
+		Long trainerId = this.userRepository.readUserByUsername(trainerUsername).getId();
+		
+		Long requestId = this.userRepository.requestTrainer(trainerId, clientId);
+		
+		return "CREATED";
+	}
 }

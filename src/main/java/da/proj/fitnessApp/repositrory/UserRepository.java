@@ -14,4 +14,6 @@ public interface UserRepository {
 	boolean checkTrainerClient(String trainserUsername, String clientUsername);
 	
 	List<SearchUser> readUsers(SearchData data);
+	
+	Long requestTrainer(Long trainerId, Long clientId);
 }

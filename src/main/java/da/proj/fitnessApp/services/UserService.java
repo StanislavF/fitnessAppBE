@@ -13,5 +13,6 @@ public interface UserService {
 	LogInData logIn (LogInData data);
 	boolean isTrainerAuthorised(String trainerUsername, String clientUsername);
 	List<SearchUser> searchUsers (SearchData data);
+	String requestTrainer(String clientUsername, String trainerUsername);
 
 }

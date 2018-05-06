@@ -1,13 +1,17 @@
 package da.proj.fitnessApp.repositrory;
 
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -21,22 +25,27 @@ import da.proj.fitnessApp.models.SearchData;
 import da.proj.fitnessApp.models.SearchUser;
 import da.proj.fitnessApp.models.User;
 import da.proj.fitnessApp.models.enums.GoalEnum;
+import da.proj.fitnessApp.models.enums.RequestStatusEnum;
 import da.proj.fitnessApp.models.enums.SexEnum;
 import da.proj.fitnessApp.utils.SQL;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
+	
+	@Value("${date.format}")
+	private String dateFormat;
 
 	@Autowired
 	private DataSource dataSource;
 
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
-
 	@PostConstruct
 	private void postConstruct() {
 		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
+	
+	private String WILDCARD="%";
 
 	public Long createUser(User user) {
 
@@ -62,6 +71,7 @@ public class UserRepositoryImpl implements UserRepository {
 		try {
 			return this.jdbcTemplate.queryForObject(SQL.READ_USER_USERNAME, parameters, (rs, rowNum) -> {
 				User user = new User();
+				user.setId(rs.getLong("usr_id"));
 				user.setAge(rs.getInt("usr_age"));
 				user.setUsername(rs.getString("usr_username"));
 				user.setFirstName(rs.getString("usr_firstname"));
@@ -107,11 +117,11 @@ public class UserRepositoryImpl implements UserRepository {
 
 		SqlParameterSource parameters = new MapSqlParameterSource()
 				.addValue("username_flag", data.getUsername() != null ? 0 : 1)
-				.addValue("usr_username", data.getUsername())
+				.addValue("usr_username", WILDCARD + data.getUsername() + WILDCARD)
 				.addValue("first_name_flag", data.getFirstName() != null ? 0 : 1)
-				.addValue("usr_firstname", data.getFirstName())
+				.addValue("usr_firstname", WILDCARD + data.getFirstName() + WILDCARD)
 				.addValue("last_name_flag", data.getLastName() != null ? 0 : 1)
-				.addValue("usr_lastname", data.getLastName())
+				.addValue("usr_lastname", WILDCARD + data.getLastName() + WILDCARD)
 				.addValue("from_age_flag", data.getFromAge() != null ? 0 : 1)
 				.addValue("usr_from_age", data.getFromAge())
 				.addValue("to_age_flag", data.getToAge() != null ? 0 : 1)
@@ -135,6 +145,25 @@ public class UserRepositoryImpl implements UserRepository {
 		
 		return result;
 
+	}
+	
+	public Long requestTrainer(Long trainerId, Long clientId) {
+		
+		DateFormat df = new SimpleDateFormat(this.dateFormat);
+		Date dateobj = new Date();
+		
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("tc_trainer_id", trainerId)
+				.addValue("tc_client_id", clientId)
+				.addValue("tc_request_status", RequestStatusEnum.REQUESTED.getValue())
+				.addValue("tc_request_sent_date", df.format(dateobj));
+				
+				
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+
+		this.jdbcTemplate.update(SQL.INSERT_TC_REQUEST, parameters, keyHolder);
+
+		return keyHolder.getKey().longValue();
 	}
 
 }

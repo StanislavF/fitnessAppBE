@@ -10,7 +10,7 @@ public class SearchData {
     private String lastName;
     private Integer fromAge;
     private Integer toAge;
-    private SexEnum sex;
+    private String sex;
     
 	public String getUsername() {
 		return username;
@@ -48,10 +48,10 @@ public class SearchData {
 	public void setToAge(Integer toAge) {
 		this.toAge = toAge;
 	}
-	public SexEnum getSex() {
+	public String getSex() {
 		return sex;
 	}
-	public void setSex(SexEnum sex) {
+	public void setSex(String sex) {
 		this.sex = sex;
 	}
     
