@@ -26,4 +26,7 @@ public class SQL {
 	public static final String READ_USERS = SqlUtils.getClasspathResource(sqlPath, "READ_USERS.sql");
 	
 	public static final String INSERT_TC_REQUEST = SqlUtils.getClasspathResource(sqlPath, "INSERT_TC_REQUEST.sql");
+	public static final String READ_CLIENT_REQUEST_USERS = SqlUtils.getClasspathResource(sqlPath, "READ_CLIENT_REQUEST_USERS.sql");
+	public static final String CHECK_EXISTING_CLIENT_REQUESTS = SqlUtils.getClasspathResource(sqlPath, "CHECK_EXISTING_CLIENT_REQUESTS.sql");
+	public static final String UPDATE_TC_REQUEST_STATUS= SqlUtils.getClasspathResource(sqlPath, "UPDATE_TC_REQUEST_STATUS.sql");
 }

@@ -3,7 +3,7 @@ package da.proj.fitnessApp.models.enums;
 public enum RequestStatusEnum {
 	REQUESTED("REQUESTED"),
 	ACCEPTED("ACCEPTED"),
-	DENIED("DENIED"),
+	REJECTED("REJECTED"),
 	CANCELED("CANCELED");
 
 	private final String value;       

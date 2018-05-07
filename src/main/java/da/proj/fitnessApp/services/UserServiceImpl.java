@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import da.proj.fitnessApp.models.LogInData;
 import da.proj.fitnessApp.models.SearchData;
 import da.proj.fitnessApp.models.SearchUser;
+import da.proj.fitnessApp.models.TrainerClientRequest;
 import da.proj.fitnessApp.models.User;
 import da.proj.fitnessApp.repositrory.UserRepository;
 
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
 			LogInData logInData = new LogInData();
 			logInData.setIsTrainer(user.getIsTrainer());
 			logInData.setUsername(user.getUsername());
-			
+
 			return logInData;
 		}
 
@@ -46,44 +47,99 @@ public class UserServiceImpl implements UserService {
 
 		return (this.userRepository.readUserByUsername(username) != null) ? true : false;
 	}
-	
+
 	@Transactional
 	public boolean isTrainerAuthorised(String trainerUsername, String clientUsername) {
-		
+
 		boolean is_authorised = false;
 		User trainer = this.userRepository.readUserByUsername(trainerUsername);
-		
-		if(trainer.getIsTrainer().equals(true)) {
+
+		if (trainer.getIsTrainer().equals(true)) {
 			is_authorised = true;
-		} else if(this.userRepository.checkTrainerClient(trainerUsername, clientUsername)) {
+		} else if (this.userRepository.checkTrainerClient(trainerUsername, clientUsername)) {
 			is_authorised = true;
 		}
-		
+
 		return is_authorised;
 	}
-	
-	public List<SearchUser> searchUsers(SearchData data){
-		
-		if(data == null) {
+
+	public List<SearchUser> searchUsers(SearchData data) {
+
+		if (data == null) {
 			return null;
 		}
-		
+
 		return this.userRepository.readUsers(data);
 	}
-	
+
 	@Transactional
 	public String requestTrainer(String clientUsername, String trainerUsername) {
-		
+
 		if (clientUsername == null || clientUsername.isEmpty() || trainerUsername == null
 				|| trainerUsername.isEmpty()) {
 			return null;
 		}
-		
+
 		Long clientId = this.userRepository.readUserByUsername(clientUsername).getId();
 		Long trainerId = this.userRepository.readUserByUsername(trainerUsername).getId();
-		
-		Long requestId = this.userRepository.requestTrainer(trainerId, clientId);
-		
+
+		String result = this.userRepository.checkForExistingRequests(trainerId, clientId);
+
+		if (result != null) {
+			return result;
+		} else {
+			Long requestId = this.userRepository.requestTrainer(trainerId, clientId);
+		}
+
 		return "CREATED";
+	}
+
+	@Transactional
+	public List<SearchUser> getClientRequestUsers(String trainerUsername) {
+
+		if (trainerUsername == null || trainerUsername.isEmpty()) {
+			return null;
+		}
+
+		return this.userRepository.readClientRequestUsers(trainerUsername);
+
+	}
+
+	@Override
+	@Transactional
+	public boolean acceptClientRequest(String clientUsername, String trainerUsername) {
+		if (clientUsername == null || clientUsername.isEmpty() || trainerUsername == null
+				|| trainerUsername.isEmpty()) {
+			return false;
+		}
+		try {
+			Long clientId = this.userRepository.readUserByUsername(clientUsername).getId();
+			Long trainerId = this.userRepository.readUserByUsername(trainerUsername).getId();
+
+			this.userRepository.acceptClientRequest(trainerId, clientId);
+
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
+	}
+
+	@Override
+	@Transactional
+	public boolean rejectClientRequest(String clientUsername, String trainerUsername) {
+		if (clientUsername == null || clientUsername.isEmpty() || trainerUsername == null
+				|| trainerUsername.isEmpty()) {
+			return false;
+		}
+		try {
+			Long clientId = this.userRepository.readUserByUsername(clientUsername).getId();
+			Long trainerId = this.userRepository.readUserByUsername(trainerUsername).getId();
+
+			this.userRepository.rejectClientRequest(trainerId, clientId);
+
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
 	}
 }

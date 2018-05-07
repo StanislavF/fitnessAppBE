@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 
 import da.proj.fitnessApp.models.SearchData;
 import da.proj.fitnessApp.models.SearchUser;
+import da.proj.fitnessApp.models.TrainerClientRequest;
 import da.proj.fitnessApp.models.User;
 import da.proj.fitnessApp.models.enums.GoalEnum;
 import da.proj.fitnessApp.models.enums.RequestStatusEnum;
@@ -165,5 +166,73 @@ public class UserRepositoryImpl implements UserRepository {
 
 		return keyHolder.getKey().longValue();
 	}
+	
+	public String checkForExistingRequests(Long trainerId, Long clientId) {
+
+		try {
+
+			SqlParameterSource parameters = new MapSqlParameterSource().addValue("tc_trainer_id", trainerId)
+					.addValue("tc_client_id", clientId).addValue("requested", RequestStatusEnum.REQUESTED.getValue())
+					.addValue("accepted", RequestStatusEnum.ACCEPTED.getValue());
+
+			return this.jdbcTemplate.queryForObject(SQL.CHECK_EXISTING_CLIENT_REQUESTS, parameters, (rs, rowNum) -> {
+
+				return rs.getString("tc_request_status");
+			});
+		} catch (Exception e) {
+			return null;
+		}
+
+	}
+	
+	public List<SearchUser> readClientRequestUsers(String trainerUsername){
+		
+		List<SearchUser> result = new ArrayList<>();
+		
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("usr_trainer_username", trainerUsername)
+				.addValue("requested", RequestStatusEnum.REQUESTED.getValue());
+		
+		this.jdbcTemplate.query(SQL.READ_CLIENT_REQUEST_USERS, parameters, (rs, rowNum) -> {
+			SearchUser user = new SearchUser();
+			user.setUsername(rs.getString("usr_username"));
+			user.setFirstName(rs.getString("usr_firstname"));
+			user.setLastName(rs.getString("usr_lastname"));
+			user.setIsTrainer(rs.getBoolean("usr_is_trainer"));
+
+			result.add(user);
+
+			return user;
+		});
+		
+		return result;
+		
+	}
+
+	@Override
+	public void acceptClientRequest(Long trainerId, Long clientId) {
+		
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("tc_trainer_id", trainerId)
+				.addValue("tc_client_id", clientId)
+				.addValue("tc_request_status", RequestStatusEnum.ACCEPTED.getValue());
+
+		this.jdbcTemplate.update(SQL.UPDATE_TC_REQUEST_STATUS, parameters);
+		
+	}
+
+	@Override
+	public void rejectClientRequest(Long trainerId, Long clientId) {
+		
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("tc_trainer_id", trainerId)
+				.addValue("tc_client_id", clientId)
+				.addValue("tc_request_status", RequestStatusEnum.REJECTED.getValue());
+
+		this.jdbcTemplate.update(SQL.UPDATE_TC_REQUEST_STATUS, parameters);
+		
+	}
+	
+	
 
 }

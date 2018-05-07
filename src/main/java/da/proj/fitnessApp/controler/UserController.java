@@ -64,8 +64,39 @@ public class UserController {
 
 		String responseText = this.userService.requestTrainer(clientUsername, trainerUsername);
 
-		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
-				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
+		return responseText != "CREATED" ? new ResponseEntity<String>(responseText, HttpStatus.ALREADY_REPORTED)
+				: new ResponseEntity<String>(responseText, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/get-client-requests", method = RequestMethod.GET)
+	public ResponseEntity<List<SearchUser>> getClientsRequests(@RequestParam String trainerUsername) {
+
+		List<SearchUser> response = this.userService.getClientRequestUsers(trainerUsername);
+
+		return response != null ? new ResponseEntity<List<SearchUser>>(response, HttpStatus.OK)
+				: new ResponseEntity<List<SearchUser>>(response, HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(value = "/accept-client-request", method = RequestMethod.PUT)
+	public ResponseEntity<String> acceptClientRequest(@RequestParam String trainerUsername,
+			@RequestParam String clientUsername) {
+
+		if(this.userService.acceptClientRequest(clientUsername, trainerUsername)) {
+			return new ResponseEntity<String>("ACCEPTED",HttpStatus.OK);
+		}
+
+		return new ResponseEntity<String>("ERROR", HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/reject-client-request", method = RequestMethod.PUT)
+	public ResponseEntity<String> rejectClientRequest(@RequestParam String trainerUsername,
+			@RequestParam String clientUsername) {
+
+		if(this.userService.rejectClientRequest(clientUsername, trainerUsername)) {
+			return new ResponseEntity<String>("ACCEPTED",HttpStatus.OK);
+		}
+
+		return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 	}
 
 }
