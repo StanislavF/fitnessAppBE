@@ -98,5 +98,32 @@ public class UserController {
 
 		return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/get-clients", method = RequestMethod.GET)
+	public ResponseEntity<List<String>> getClientUsernames(@RequestParam String trainerUsername) {
+
+		List<String> response = this.userService.getClientsUsername(trainerUsername);
+
+		return response != null ? new ResponseEntity<List<String>>(response, HttpStatus.OK)
+				: new ResponseEntity<List<String>>(response, HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(value = "/get-trainers", method = RequestMethod.GET)
+	public ResponseEntity<List<String>> getTrainerUsernames(@RequestParam String clientUsername) {
+
+		List<String> response = this.userService.getTrainersUsername(clientUsername);
+
+		return response != null ? new ResponseEntity<List<String>>(response, HttpStatus.OK)
+				: new ResponseEntity<List<String>>(response, HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(value = "/get-user-data", method = RequestMethod.GET)
+	public ResponseEntity<User> getUserDate(@RequestParam String username) {
+
+		User response = this.userService.getUserDataByUsername(username);
+
+		return response != null ? new ResponseEntity<User>(response, HttpStatus.OK)
+				: new ResponseEntity<User>(response, HttpStatus.NOT_FOUND);
+	}
 
 }

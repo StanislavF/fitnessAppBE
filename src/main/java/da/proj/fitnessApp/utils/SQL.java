@@ -29,4 +29,7 @@ public class SQL {
 	public static final String READ_CLIENT_REQUEST_USERS = SqlUtils.getClasspathResource(sqlPath, "READ_CLIENT_REQUEST_USERS.sql");
 	public static final String CHECK_EXISTING_CLIENT_REQUESTS = SqlUtils.getClasspathResource(sqlPath, "CHECK_EXISTING_CLIENT_REQUESTS.sql");
 	public static final String UPDATE_TC_REQUEST_STATUS= SqlUtils.getClasspathResource(sqlPath, "UPDATE_TC_REQUEST_STATUS.sql");
+	public static final String READ_CLIENTS = SqlUtils.getClasspathResource(sqlPath, "READ_CLIENTS.sql");
+	public static final String READ_TRAINERS= SqlUtils.getClasspathResource(sqlPath, "READ_TRAINERS.sql");
+
 }

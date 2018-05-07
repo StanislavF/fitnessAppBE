@@ -17,5 +17,7 @@ public interface UserService {
 	List<SearchUser> getClientRequestUsers(String trainerUsername);
 	boolean acceptClientRequest(String clientUsername, String trainerUsername);
 	boolean rejectClientRequest(String clientUsername, String trainerUsername);
-
+	List<String> getClientsUsername(String trainerUsername);
+	List<String> getTrainersUsername(String clientUsername);
+	User getUserDataByUsername(String username);
 }

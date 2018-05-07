@@ -25,4 +25,8 @@ public interface UserRepository {
 	void acceptClientRequest(Long trainerId, Long clientId);
 	
 	void rejectClientRequest(Long trainerId, Long clientId);
+	
+	List<String> readClientsUsername(Long trainerId);
+	
+	List<String> readTrainersUsername(Long clientId);
 }

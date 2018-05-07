@@ -232,6 +232,26 @@ public class UserRepositoryImpl implements UserRepository {
 		this.jdbcTemplate.update(SQL.UPDATE_TC_REQUEST_STATUS, parameters);
 		
 	}
+
+	@Override
+	public List<String> readClientsUsername(Long trainerId) {
+		
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("tc_trainer_id", trainerId)
+				.addValue("tc_request_status", RequestStatusEnum.ACCEPTED.getValue());
+
+		return this.jdbcTemplate.queryForList(SQL.READ_CLIENTS, parameters, String.class);
+	}
+
+	@Override
+	public List<String> readTrainersUsername(Long clientId) {
+		
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("tc_client_id", clientId)
+				.addValue("tc_request_status", RequestStatusEnum.ACCEPTED.getValue());
+
+		return this.jdbcTemplate.queryForList(SQL.READ_TRAINERS, parameters, String.class);
+	}
 	
 	
 

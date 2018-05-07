@@ -142,4 +142,43 @@ public class UserServiceImpl implements UserService {
 			return false;
 		}
 	}
+
+	@Override
+	@Transactional
+	public List<String> getClientsUsername(String trainerUsername) {
+
+		if(trainerUsername == null || trainerUsername.isEmpty()) {
+			return null;
+		}
+		
+		Long trainerId = this.userRepository.readUserByUsername(trainerUsername).getId();
+		
+		return this.userRepository.readClientsUsername(trainerId);
+		
+	}
+
+	@Override
+	public List<String> getTrainersUsername(String clientUsername) {
+		
+		if(clientUsername == null || clientUsername.isEmpty()) {
+			return null;
+		}
+		
+		Long clientId = this.userRepository.readUserByUsername(clientUsername).getId();
+		
+		return this.userRepository.readTrainersUsername(clientId);
+		
+	}
+
+	@Override
+	public User getUserDataByUsername(String username) {
+		
+		if(username == null || username.isEmpty()) {
+			return null;
+		}
+		
+		return this.userRepository.readUserByUsername(username);
+	}
+	
+	
 }
