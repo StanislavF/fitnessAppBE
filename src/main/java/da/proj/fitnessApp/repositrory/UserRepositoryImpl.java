@@ -101,14 +101,20 @@ public class UserRepositoryImpl implements UserRepository {
 
 	}
 
-	public boolean checkTrainerClient(String trainserUsername, String clientUsername) {
+	public boolean checkTrainerClient(Long trainerId, String clientUsername) {
 
-		SqlParameterSource parameters = new MapSqlParameterSource().addValue("trainer_username", trainserUsername)
-				.addValue("client_username", clientUsername).addValue("tc_request_status", "ACCEPTED");
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("trainer_id", String.valueOf(trainerId))
+				.addValue("client_username", clientUsername)
+				.addValue("tc_request_status", RequestStatusEnum.ACCEPTED.getValue());
 
+		try {
 		return this.jdbcTemplate.queryForObject(SQL.CHECK_TRAINER_CLIENT, parameters, (rs, rowNum) -> {
-			return rowNum > 0 ? true : false;
+			return true;
 		});
+		} catch (EmptyResultDataAccessException ex) {
+			return false;
+		}
 
 	}
 

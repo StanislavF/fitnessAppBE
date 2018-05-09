@@ -32,14 +32,14 @@ public class TrainingServiceImpl implements TrainingService {
 			return null;
 		}
 
-		this.safeMissingExercises(trainingDay.getExercseRows());
+		this.safeMissingExercises(trainingDay.getExerciseRows());
 
 		User trainer = this.userRepository.readUserByUsername(trainerUsername);
 		User client = this.userRepository.readUserByUsername(clientUsername);
 
 		Long trainingDayId = this.trainingRepository.createTrainingDay(trainingDay, client.getId(), trainer.getId());
 
-		this.trainingRepository.createExerciseRow(trainingDay.getExercseRows(), trainingDayId);
+		this.trainingRepository.createExerciseRow(trainingDay.getExerciseRows(), trainingDayId);
 
 		return "CREATED";
 
@@ -60,7 +60,7 @@ public class TrainingServiceImpl implements TrainingService {
 				trainer.getId());
 
 		for (TrainingDay trainingDay : trainingDays) {
-			trainingDay.setExercseRows(this.trainingRepository.readExerciseRowsForTD(trainingDay.getId()));
+			trainingDay.setExerciseRows(this.trainingRepository.readExerciseRowsForTD(trainingDay.getId()));
 		}
 
 		return trainingDays;

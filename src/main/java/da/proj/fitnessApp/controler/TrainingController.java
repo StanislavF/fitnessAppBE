@@ -1,7 +1,10 @@
 package da.proj.fitnessApp.controler;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+
 import da.proj.fitnessApp.models.Exercise;
+import da.proj.fitnessApp.models.ExerciseRow;
 import da.proj.fitnessApp.models.TrainingDay;
 import da.proj.fitnessApp.services.TrainingService;
 import da.proj.fitnessApp.services.UserService;
@@ -28,8 +34,31 @@ public class TrainingController {
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	public ResponseEntity<String> createTrainingDay(@RequestBody TrainingDay trainingDay,
-			@RequestParam("trainerUsername") String trainerUsername, @RequestParam("username") String clientUsername) {
+			@RequestParam String trainerUsername, @RequestParam String clientUsername) {
 
+		TrainingDay td = new TrainingDay();
+		td.setDate("data");
+		ExerciseRow er = new ExerciseRow();
+		Exercise ex = new Exercise();
+		ex.setName("name");
+		er.setExercise(ex);
+		er.setExerciseNo(1);
+		er.setReps("1");
+		er.setSets("1");
+		er.setWeight("1");
+		List<ExerciseRow> list = new ArrayList<>();
+		list.add(er);
+		td.setExerciseRows(list);
+        ObjectMapper mapperObj = new ObjectMapper();
+        
+        try {
+            // get Employee object as a json string
+            String jsonStr = mapperObj.writeValueAsString(td);
+            System.out.println(jsonStr);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 		String responseText = this.trainingService.createTrainingDay(trainingDay, clientUsername, trainerUsername);
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
@@ -37,10 +66,10 @@ public class TrainingController {
 	}
 
 	@RequestMapping(value = "/get", method = RequestMethod.GET)
-	public ResponseEntity<List<TrainingDay>> getTrainingDays(@RequestParam("trainerUsername") String trainerUsername,
-			@RequestParam("clientUsername") String clientUsername, @RequestParam("date") String date) {
+	public ResponseEntity<List<TrainingDay>> getTrainingDays(@RequestParam String trainerUsername,
+			@RequestParam String clientUsername, @RequestParam String date) {
 
-		if (this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
+		if (!this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
 			return new ResponseEntity<List<TrainingDay>>(HttpStatus.UNAUTHORIZED);
 		}
 

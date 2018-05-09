@@ -8,7 +8,7 @@ public class TrainingDay {
 	private Integer no;
 	private String title;
 	private String date;
-	private List<ExerciseRow> exercseRows;
+	private List<ExerciseRow> exerciseRows;
 	
 	public Long getId() {
 		return id;
@@ -34,11 +34,11 @@ public class TrainingDay {
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public List<ExerciseRow> getExercseRows() {
-		return exercseRows;
+	public List<ExerciseRow> getExerciseRows() {
+		return exerciseRows;
 	}
-	public void setExercseRows(List<ExerciseRow> exercseRows) {
-		this.exercseRows = exercseRows;
+	public void setExerciseRows(List<ExerciseRow> exercseRows) {
+		this.exerciseRows = exercseRows;
 	}
 	
 	

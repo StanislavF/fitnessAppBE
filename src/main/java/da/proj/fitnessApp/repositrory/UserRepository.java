@@ -12,7 +12,7 @@ public interface UserRepository {
 	
 	User readUserByUsername (String username);
 	
-	boolean checkTrainerClient(String trainserUsername, String clientUsername);
+	boolean checkTrainerClient(Long trainerId, String clientUsername);
 	
 	List<SearchUser> readUsers(SearchData data);
 	

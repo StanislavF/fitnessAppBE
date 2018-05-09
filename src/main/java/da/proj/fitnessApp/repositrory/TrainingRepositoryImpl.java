@@ -69,7 +69,7 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 
 		for (ExerciseRow exerciseRow : exerciseRows) {
 			Map<String, String> newMap = new HashMap<String, String>();
-			newMap.put("er_no", String.valueOf(exerciseRow.getNo()));
+			newMap.put("er_no", String.valueOf(exerciseRow.getExerciseNo()));
 			newMap.put("ex_name", exerciseRow.getExercise().getName());
 			newMap.put("er_sets", exerciseRow.getSets());
 			newMap.put("er_reps", exerciseRow.getReps());
@@ -88,9 +88,12 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 
-		SqlParameterSource parameters = new MapSqlParameterSource().addValue("td_no", trainingDay.getNo())
-				.addValue("td_title", trainingDay.getTitle()).addValue("td_date", trainingDay.getDate())
-				.addValue("td_client_id", clientId).addValue("td_trainer_id", trainerId);
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("td_no", trainingDay.getNo())
+				.addValue("td_title", trainingDay.getTitle())
+				.addValue("td_date", trainingDay.getDate())
+				.addValue("td_client_id", clientId)
+				.addValue("td_trainer_id", trainerId);
 
 		this.jdbcTemplate.update(SQL.CREATE_TRAINING_DAY, parameters, keyHolder);
 
@@ -133,7 +136,7 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 			exercise.setName(rs.getString("ex_name"));
 			exerciseRow.setExercise(exercise);
 			exerciseRow.setId(rs.getLong("er_id"));
-			exerciseRow.setNo(rs.getInt("er_no"));
+			exerciseRow.setExerciseNo(rs.getInt("er_no"));
 			exerciseRow.setReps(rs.getString("er_reps"));
 			exerciseRow.setSets(rs.getString("er_sets"));
 			exerciseRow.setWeight(rs.getString("er_weight"));

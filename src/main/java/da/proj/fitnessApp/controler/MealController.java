@@ -39,7 +39,7 @@ public class MealController {
 	public ResponseEntity<List<SingleMeal>> getSingleMeals(@RequestParam("trainerUsername") String trainerUsername,
 			@RequestParam("clientUsername") String clientUsername, @RequestParam("date") String date) {
 
-		if (this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
+		if (!this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
 			return new ResponseEntity<List<SingleMeal>>(HttpStatus.UNAUTHORIZED);
 		}
 

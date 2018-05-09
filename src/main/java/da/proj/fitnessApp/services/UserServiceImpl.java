@@ -54,11 +54,10 @@ public class UserServiceImpl implements UserService {
 		boolean is_authorised = false;
 		User trainer = this.userRepository.readUserByUsername(trainerUsername);
 
-		if (trainer.getIsTrainer().equals(true)) {
+		if (trainer.getIsTrainer().equals(true)
+				&& this.userRepository.checkTrainerClient(trainer.getId(), clientUsername)) {
 			is_authorised = true;
-		} else if (this.userRepository.checkTrainerClient(trainerUsername, clientUsername)) {
-			is_authorised = true;
-		}
+		} 
 
 		return is_authorised;
 	}
