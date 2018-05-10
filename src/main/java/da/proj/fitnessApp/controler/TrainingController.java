@@ -95,8 +95,8 @@ public class TrainingController {
 
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)
 	public ResponseEntity<String> updateTrainingDay(@RequestBody TrainingDay newTrainingDay,
-			@RequestParam("oldTrainingDayId") Long oldTrainingDayId,
-			@RequestParam("trainerUsername") String trainerUsername, @RequestParam("username") String clientUsername) {
+			@RequestParam Long oldTrainingDayId,
+			@RequestParam String trainerUsername, @RequestParam String clientUsername) {
 
 		String responseText = this.trainingService.updateTrainingDay(newTrainingDay, oldTrainingDayId, clientUsername, trainerUsername);
 

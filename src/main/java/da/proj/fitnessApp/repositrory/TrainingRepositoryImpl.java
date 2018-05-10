@@ -112,6 +112,7 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 		this.jdbcTemplate.query(SQL.READ_TD_USER, parameters, 
 				(rs) -> { 
 					TrainingDay trainingDay = new TrainingDay();
+					trainingDay.setId(rs.getLong("td_id"));
 					trainingDay.setDate(rs.getString("td_date"));
 					trainingDay.setId(rs.getLong("td_id"));
 					trainingDay.setNo(rs.getInt("td_no"));
@@ -153,9 +154,9 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 
 		SqlParameterSource parameters = new MapSqlParameterSource().addValue("td_id", trainingDayId);
 
-		this.jdbcTemplate.update(SQL.DELETE_TRAINING_DAY, parameters, keyHolder);
+		this.jdbcTemplate.update(SQL.DELETE_TRAINING_DAY, parameters);
 
-		return keyHolder != null ? keyHolder.getKey().longValue() : null;
+		return null;
 	}
 
 }
