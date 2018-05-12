@@ -1,2 +1,2 @@
-DELETE FROM `training_day` 
-WHERE td_id = :td_id
+DELETE FROM `single_meal` 
+WHERE sm_id = :sm_id

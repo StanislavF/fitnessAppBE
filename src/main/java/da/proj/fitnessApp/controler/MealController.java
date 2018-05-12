@@ -27,7 +27,7 @@ public class MealController {
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	public ResponseEntity<String> createSingleMeal(@RequestBody SingleMeal singleMeal,
-			@RequestParam("trainerUsername") String trainerUsername, @RequestParam("username") String clientUsername) {
+			@RequestParam String trainerUsername, @RequestParam String clientUsername) {
 
 		String responseText = this.mealService.createSingleMeal(singleMeal, clientUsername, trainerUsername);
 
@@ -50,18 +50,16 @@ public class MealController {
 	}
 
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-	public ResponseEntity<String> deleteSingleMeal(@RequestParam("trainerUsername") String trainerUsername,
-			@RequestParam("clientUsername") String clientUsername, @RequestParam("SingleMealId") Long SingleMealId) {
+	public ResponseEntity<String> deleteSingleMeal(@RequestParam String trainerUsername,
+			@RequestParam String clientUsername, @RequestParam Long singleMealId) {
 
-		if (this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
+		if (!this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		Long deletedTdId;
+		boolean isDeleted = this.mealService.deleteSingleMeal(singleMealId);
 
-		deletedTdId = this.mealService.deleteSingleMeal(SingleMealId);
-
-		return deletedTdId != null ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return isDeleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)

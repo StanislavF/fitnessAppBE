@@ -65,9 +65,14 @@ public class MealServiceImpl implements MealService {
 	}
 
 	@Override
-	public Long deleteSingleMeal(Long singleMeal) {
-		
-		return singleMeal != null ? this.mealRepository.deleteSingleMeal(singleMeal) : null;
+	public boolean deleteSingleMeal(Long singleMeal) {
+		try {
+			this.mealRepository.deleteSingleMeal(singleMeal);
+			
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	@Override
@@ -102,7 +107,7 @@ public class MealServiceImpl implements MealService {
 		List<Food> missingFoods = new ArrayList<>();
 
 		for (Food food : currentFoods) {
-			if (allFoods.indexOf(food) == -1) {
+			if (!allFoods.contains(food) ) {
 				missingFoods.add(food);
 			}
 		}

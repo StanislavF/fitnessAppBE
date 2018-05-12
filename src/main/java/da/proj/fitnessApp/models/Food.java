@@ -18,5 +18,13 @@ public class Food {
 		this.name = name;
 	}
 	
+	public boolean equals(Object o) {
+
+		if(o instanceof Food) {
+			return ((Food)o).getName().equals(this.getName());
+		}
+		
+		return o.equals(this);
+	}
 	
 }

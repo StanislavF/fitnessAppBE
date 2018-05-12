@@ -66,27 +66,33 @@ public class TrainingServiceImpl implements TrainingService {
 		return trainingDays;
 	}
 
-	public Long deleteTrainingDay(Long trainingDayId) {
+	public boolean deleteTrainingDay(Long trainingDayId) {
 
-		return trainingDayId != null ? this.trainingRepository.deleteTrainingDay(trainingDayId) : null;
+		try {
+			this.trainingRepository.deleteTrainingDay(trainingDayId);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 
 	}
 
 	@Transactional
-	public String updateTrainingDay(TrainingDay newTrainingDay, Long oldTrainingDayId, String clientUsername, String trainerUsername) {
+	public String updateTrainingDay(TrainingDay newTrainingDay, Long oldTrainingDayId, String clientUsername,
+			String trainerUsername) {
 
 		this.deleteTrainingDay(oldTrainingDayId);
-		
+
 		return this.createTrainingDay(newTrainingDay, clientUsername, trainerUsername);
 
 	}
 
 	private void safeMissingExercises(List<ExerciseRow> exerciseRows) {
 
-		if(exerciseRows == null || exerciseRows.isEmpty()) {
+		if (exerciseRows == null || exerciseRows.isEmpty()) {
 			return;
 		}
-		
+
 		List<Exercise> exercisesToCheck = new ArrayList<>();
 		for (ExerciseRow exerciseRow : exerciseRows) {
 			exercisesToCheck.add(exerciseRow.getExercise());
@@ -113,5 +119,19 @@ public class TrainingServiceImpl implements TrainingService {
 		}
 
 		return missingExercises;
+	}
+
+	@Override
+	public String createComment(Long exerciseRowId, String comment) {
+		if (exerciseRowId == null || comment == null || comment.isEmpty()) {
+			return null;
+		}
+		try {
+			this.trainingRepository.createComment(exerciseRowId, comment);
+			return "CREATED";
+		} catch (Exception ex) {
+			return "ERROR";
+		}
+
 	}
 }

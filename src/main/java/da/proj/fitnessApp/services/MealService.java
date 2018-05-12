@@ -11,7 +11,7 @@ public interface MealService {
 
 	public List<SingleMeal> getAllSingleMealsForUser(String date, String clientUsername, String trainerUsername);
 
-	public Long deleteSingleMeal(Long singleMeal);
+	public boolean deleteSingleMeal(Long singleMeal);
 	
 	public String updateSingleMeal(SingleMeal newSingleMeal, Long oldSingleMealId, String clientUsername, String trainerUsername);
 }

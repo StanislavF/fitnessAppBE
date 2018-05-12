@@ -7,6 +7,7 @@ public class SQL {
 	public final static String CREATE_EXERCISE = SqlUtils.getClasspathResource(sqlPath, "CREATE_EXERCISE.sql");
 	public final static String CREATE_EXERCISE_ROW = SqlUtils.getClasspathResource(sqlPath, "CREATE_EXERCISE_ROW.sql");
 	public final static String CREATE_TRAINING_DAY = SqlUtils.getClasspathResource(sqlPath, "CREATE_TRAINING_DAY.sql");
+	public final static String CREATE_ER_COMMENT = SqlUtils.getClasspathResource(sqlPath, "CREATE_ER_COMMENT.sql");
 	public static final String READ_ALL_EXERCISES = SqlUtils.getClasspathResource(sqlPath, "READ_ALL_EXERCISES.sql");
 	public static final String READ_ALL_EXERCISE_ROWS = SqlUtils.getClasspathResource(sqlPath, "READ_ALL_EXERCISE_ROWS.sql");
 	public static final String DELETE_TRAINING_DAY = SqlUtils.getClasspathResource(sqlPath, "DELETE_TRAINING_DAY.sql");

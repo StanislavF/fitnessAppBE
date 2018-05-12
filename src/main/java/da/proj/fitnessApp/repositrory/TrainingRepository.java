@@ -20,5 +20,7 @@ public interface TrainingRepository {
 	
 	List<ExerciseRow> readExerciseRowsForTD(Long trainingDayId);
 	
-	Long deleteTrainingDay(Long trainingDayId);
+	void deleteTrainingDay(Long trainingDayId);
+	
+	void createComment(Long exerciseRowId, String comment);
 }

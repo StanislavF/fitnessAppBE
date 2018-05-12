@@ -20,5 +20,5 @@ public interface MealRepository {
 
 	List<FoodRow> readFoodRowsForSM(Long singleMealId);
 
-	Long deleteSingleMeal(Long singleMealId);
+	void deleteSingleMeal(Long singleMealId);
 }

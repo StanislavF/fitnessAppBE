@@ -7,7 +7,7 @@ INSERT INTO `food_row`( 	`fr_no`,
 							`fr_fats`,
 							`fr_sm_id`) 
 SELECT  :fr_no, 
-		exercise.ex_id , 
+		food.fd_id , 
 		:fr_weight, 
 		:fr_calories, 
 		:fr_proteins, 

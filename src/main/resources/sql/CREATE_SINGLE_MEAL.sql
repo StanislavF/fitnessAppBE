@@ -1,5 +1,4 @@
-INSERT INTO `single_meal`(  `sm_id`, 
-							`sm_no`, 
+INSERT INTO `single_meal`(  `sm_no`, 
 							`sm_title`, 
 							`sm_client_id`, 
 							`sm_trainer_id`, 
@@ -9,8 +8,7 @@ INSERT INTO `single_meal`(  `sm_id`,
 							`sm_carbs`, 
 							`sm_fats`) 
 							
-				  VALUES (  :sm_id, 
-							:sm_no, 
+				  VALUES (  :sm_no, 
 							:sm_title, 
 							:sm_client_id, 
 							:sm_trainer_id, 

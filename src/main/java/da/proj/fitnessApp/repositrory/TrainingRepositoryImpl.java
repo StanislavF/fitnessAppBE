@@ -49,7 +49,7 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 		this.jdbcTemplate.batchUpdate(SQL.CREATE_EXERCISE, parameters);
 
 	}
-	
+
 	public List<Exercise> readAllExercises() {
 
 		List<Exercise> results = new ArrayList<>();
@@ -88,42 +88,36 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 
-		SqlParameterSource parameters = new MapSqlParameterSource()
-				.addValue("td_no", trainingDay.getNo())
-				.addValue("td_title", trainingDay.getTitle())
-				.addValue("td_date", trainingDay.getDate())
-				.addValue("td_client_id", clientId)
-				.addValue("td_trainer_id", trainerId);
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("td_no", trainingDay.getNo())
+				.addValue("td_title", trainingDay.getTitle()).addValue("td_date", trainingDay.getDate())
+				.addValue("td_client_id", clientId).addValue("td_trainer_id", trainerId);
 
 		this.jdbcTemplate.update(SQL.CREATE_TRAINING_DAY, parameters, keyHolder);
 
 		return keyHolder != null ? keyHolder.getKey().longValue() : null;
 	}
-	
-	public List<TrainingDay> readTrainingDays(String date, Long clientId, Long trainerId) {
-		
-		List<TrainingDay> results = new ArrayList<>();
-		
-		SqlParameterSource parameters = new MapSqlParameterSource()
-				.addValue("td_client_id", clientId)
-				.addValue("td_trainer_id", trainerId)
-				.addValue("td_date", date);
 
-		this.jdbcTemplate.query(SQL.READ_TD_USER, parameters, 
-				(rs) -> { 
-					TrainingDay trainingDay = new TrainingDay();
-					trainingDay.setId(rs.getLong("td_id"));
-					trainingDay.setDate(rs.getString("td_date"));
-					trainingDay.setId(rs.getLong("td_id"));
-					trainingDay.setNo(rs.getInt("td_no"));
-					trainingDay.setTitle(rs.getString("td_title"));
-					results.add(trainingDay);
-					
-				});
-		
+	public List<TrainingDay> readTrainingDays(String date, Long clientId, Long trainerId) {
+
+		List<TrainingDay> results = new ArrayList<>();
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("td_client_id", clientId)
+				.addValue("td_trainer_id", trainerId).addValue("td_date", date);
+
+		this.jdbcTemplate.query(SQL.READ_TD_USER, parameters, (rs) -> {
+			TrainingDay trainingDay = new TrainingDay();
+			trainingDay.setId(rs.getLong("td_id"));
+			trainingDay.setDate(rs.getString("td_date"));
+			trainingDay.setId(rs.getLong("td_id"));
+			trainingDay.setNo(rs.getInt("td_no"));
+			trainingDay.setTitle(rs.getString("td_title"));
+			results.add(trainingDay);
+
+		});
+
 		return results;
 	}
-	
+
 	public List<ExerciseRow> readExerciseRowsForTD(Long trainingDayId) {
 
 		List<ExerciseRow> results = new ArrayList<>();
@@ -147,16 +141,23 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 
 		return results;
 	}
-	
-	public Long deleteTrainingDay(Long trainingDayId) {
-		
-		KeyHolder keyHolder = new GeneratedKeyHolder();
+
+	public void deleteTrainingDay(Long trainingDayId) {
 
 		SqlParameterSource parameters = new MapSqlParameterSource().addValue("td_id", trainingDayId);
 
 		this.jdbcTemplate.update(SQL.DELETE_TRAINING_DAY, parameters);
 
-		return null;
+	}
+
+	@Override
+	public void createComment(Long exerciseRowId, String comment) {
+
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("er_id", exerciseRowId)
+				.addValue("er_comment", comment);
+
+		this.jdbcTemplate.update(SQL.CREATE_ER_COMMENT, parameters);
 	}
 
 }

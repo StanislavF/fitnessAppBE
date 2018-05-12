@@ -30,23 +30,23 @@ public class MealRepositoryImpl implements MealRepository {
 	
 	@Override
 	public void createFoods(List<Food> foods) {
-		List<Map<String, String>> exerciesMap = new ArrayList<>();
+		List<Map<String, String>> foodsMap = new ArrayList<>();
 
 		for (Food food : foods) {
 			Map<String, String> newMap = new HashMap<String, String>();
-			newMap.put("td_name", food.getName());
-			exerciesMap.add(newMap);
+			newMap.put("fd_name", food.getName());
+			foodsMap.add(newMap);
 		}
 
-		SqlParameterSource[] parameters = SqlParameterSourceUtils.createBatch(exerciesMap.toArray());
+		SqlParameterSource[] parameters = SqlParameterSourceUtils.createBatch(foodsMap.toArray());
 
-		this.jdbcTemplate.batchUpdate(SQL.CREATE_EXERCISE, parameters);
+		this.jdbcTemplate.batchUpdate(SQL.CREATE_FOOD, parameters);
 		
 	}
 
 	@Override
 	public void createFoodRow(List<FoodRow> foodRows, Long sm_id) {
-		List<Map<String, String>> exerciesMap = new ArrayList<>();
+		List<Map<String, String>> foodsMap = new ArrayList<>();
 
 		for (FoodRow foodRow : foodRows) {
 			Map<String, String> newMap = new HashMap<String, String>();
@@ -58,10 +58,10 @@ public class MealRepositoryImpl implements MealRepository {
 			newMap.put("fr_carbs", String.valueOf(foodRow.getCarbs()));
 			newMap.put("fr_fats", String.valueOf(foodRow.getFats()));
 			newMap.put("fr_sm_id", String.valueOf(sm_id));
-			exerciesMap.add(newMap);
+			foodsMap.add(newMap);
 		}
 
-		SqlParameterSource[] parameters = SqlParameterSourceUtils.createBatch(exerciesMap.toArray());
+		SqlParameterSource[] parameters = SqlParameterSourceUtils.createBatch(foodsMap.toArray());
 
 		this.jdbcTemplate.batchUpdate(SQL.CREATE_FOOD_ROW, parameters);
 	}
@@ -105,6 +105,7 @@ public class MealRepositoryImpl implements MealRepository {
 		this.jdbcTemplate.query(SQL.READ_SM_USER, parameters, 
 				(rs) -> { 
 					SingleMeal singleMeal = new SingleMeal();
+					singleMeal.setId(rs.getLong("sm_id"));
 					singleMeal.setDate(rs.getString("sm_date"));
 					singleMeal.setId(rs.getLong("sm_id"));
 					singleMeal.setNo(rs.getInt("sm_no"));
@@ -146,14 +147,12 @@ public class MealRepositoryImpl implements MealRepository {
 	}
 
 	@Override
-	public Long deleteSingleMeal(Long singleMealId) {
-		KeyHolder keyHolder = new GeneratedKeyHolder();
+	public void deleteSingleMeal(Long singleMealId) {
 
 		SqlParameterSource parameters = new MapSqlParameterSource().addValue("sm_id", singleMealId);
 
-		this.jdbcTemplate.update(SQL.DELETE_SINGLE_MEAL, parameters, keyHolder);
+		this.jdbcTemplate.update(SQL.DELETE_SINGLE_MEAL, parameters);
 
-		return keyHolder != null ? keyHolder.getKey().longValue() : null;
 	}
 
 }

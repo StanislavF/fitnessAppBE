@@ -61,13 +61,13 @@ public class TrainingController {
 	public ResponseEntity<String> deleteTrainingDay(@RequestParam("trainerUsername") String trainerUsername,
 			@RequestParam("clientUsername") String clientUsername, @RequestParam("trainingDayId") Long trainingDayId) {
 
-		if (this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
+		if (!this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		Long deletedTdId = this.trainingService.deleteTrainingDay(trainingDayId);
+		boolean isDeleted = this.trainingService.deleteTrainingDay(trainingDayId);
 
-		return deletedTdId != null ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return isDeleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)
@@ -76,6 +76,17 @@ public class TrainingController {
 			@RequestParam String trainerUsername, @RequestParam String clientUsername) {
 
 		String responseText = this.trainingService.updateTrainingDay(newTrainingDay, oldTrainingDayId, clientUsername, trainerUsername);
+
+		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
+				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
+	}
+	
+	@RequestMapping(value = "/comment/create", method = RequestMethod.PUT)
+	public ResponseEntity<String> createComment(@RequestParam String clientUsername, @RequestParam Long exerciseRowId,
+			@RequestParam String comment) {
+
+		// ToDo check if trainingDay is of the user
+		String responseText = this.trainingService.createComment(exerciseRowId, comment);
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
 				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
