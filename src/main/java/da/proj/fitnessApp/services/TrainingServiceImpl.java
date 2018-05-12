@@ -107,7 +107,7 @@ public class TrainingServiceImpl implements TrainingService {
 		List<Exercise> missingExercises = new ArrayList<>();
 
 		for (Exercise exercise : currentExercises) {
-			if (allExercises.indexOf(exercise) == -1) {
+			if (!allExercises.contains(exercise)) {
 				missingExercises.add(exercise);
 			}
 		}

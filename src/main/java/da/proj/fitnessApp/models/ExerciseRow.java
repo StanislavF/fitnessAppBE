@@ -3,7 +3,7 @@ package da.proj.fitnessApp.models;
 public class ExerciseRow {
 
 	private Long id;
-	private Integer exerciseNo;
+	private String exerciseNo;
 	private Exercise exercise;
 	private String sets;
 	private String reps;
@@ -18,10 +18,10 @@ public class ExerciseRow {
 		this.id = id;
 	}
 	
-	public Integer getExerciseNo() {
+	public String getExerciseNo() {
 		return exerciseNo;
 	}
-	public void setExerciseNo(Integer exerciseNo) {
+	public void setExerciseNo(String exerciseNo) {
 		this.exerciseNo = exerciseNo;
 	}
 	public Exercise getExercise() {

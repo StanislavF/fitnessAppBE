@@ -36,29 +36,6 @@ public class TrainingController {
 	public ResponseEntity<String> createTrainingDay(@RequestBody TrainingDay trainingDay,
 			@RequestParam String trainerUsername, @RequestParam String clientUsername) {
 
-		TrainingDay td = new TrainingDay();
-		td.setDate("data");
-		ExerciseRow er = new ExerciseRow();
-		Exercise ex = new Exercise();
-		ex.setName("name");
-		er.setExercise(ex);
-		er.setExerciseNo(1);
-		er.setReps("1");
-		er.setSets("1");
-		er.setWeight("1");
-		List<ExerciseRow> list = new ArrayList<>();
-		list.add(er);
-		td.setExerciseRows(list);
-        ObjectMapper mapperObj = new ObjectMapper();
-        
-        try {
-            // get Employee object as a json string
-            String jsonStr = mapperObj.writeValueAsString(td);
-            System.out.println(jsonStr);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 		String responseText = this.trainingService.createTrainingDay(trainingDay, clientUsername, trainerUsername);
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)

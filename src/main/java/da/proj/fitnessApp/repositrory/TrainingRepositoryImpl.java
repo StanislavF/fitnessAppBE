@@ -137,7 +137,7 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 			exercise.setName(rs.getString("ex_name"));
 			exerciseRow.setExercise(exercise);
 			exerciseRow.setId(rs.getLong("er_id"));
-			exerciseRow.setExerciseNo(rs.getInt("er_no"));
+			exerciseRow.setExerciseNo(rs.getString("er_no"));
 			exerciseRow.setReps(rs.getString("er_reps"));
 			exerciseRow.setSets(rs.getString("er_sets"));
 			exerciseRow.setWeight(rs.getString("er_weight"));

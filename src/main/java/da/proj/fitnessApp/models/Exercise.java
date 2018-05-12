@@ -18,6 +18,14 @@ public class Exercise {
 		this.name = name;
 	}
 	
+	public boolean equals(Object o) {
+
+		if(o instanceof Exercise) {
+			return ((Exercise)o).getName().equals(this.getName());
+		}
+		
+		return o.equals(this);
+	}
 	
 
 }

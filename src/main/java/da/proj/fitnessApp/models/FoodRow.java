@@ -3,7 +3,7 @@ package da.proj.fitnessApp.models;
 public class FoodRow {
 
 	private Long id;
-	private Integer no;
+	private String no;
 	private Food food;
 	private String weight;
 	private Integer calories;
@@ -18,10 +18,10 @@ public class FoodRow {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Integer getNo() {
+	public String getNo() {
 		return no;
 	}
-	public void setNo(Integer no) {
+	public void setNo(String no) {
 		this.no = no;
 	}
 	public Food getFood() {

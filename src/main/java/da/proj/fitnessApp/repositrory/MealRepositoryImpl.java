@@ -132,7 +132,7 @@ public class MealRepositoryImpl implements MealRepository {
 			food.setName(rs.getString("fd_name"));
 			foodRow.setFood(food);
 			foodRow.setId(rs.getLong("fr_id"));
-			foodRow.setNo(rs.getInt("fr_no"));
+			foodRow.setNo(rs.getString("fr_no"));
 			foodRow.setWeight(rs.getString("fr_weight"));
 			foodRow.setCalories(rs.getInt("fr_calories"));
 			foodRow.setProteins(rs.getInt("fr_proteins"));
