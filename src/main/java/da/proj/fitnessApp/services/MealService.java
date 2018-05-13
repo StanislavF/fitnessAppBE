@@ -9,9 +9,11 @@ public interface MealService {
 
 	String createSingleMeal(SingleMeal singleMeal, String clientUsername, String trainerUsername);
 
-	public List<SingleMeal> getAllSingleMealsForUser(String date, String clientUsername, String trainerUsername);
+	List<SingleMeal> getAllSingleMealsForUser(String date, String clientUsername, String trainerUsername);
 
-	public boolean deleteSingleMeal(Long singleMeal);
+	boolean deleteSingleMeal(Long singleMeal);
 	
-	public String updateSingleMeal(SingleMeal newSingleMeal, Long oldSingleMealId, String clientUsername, String trainerUsername);
+	String updateSingleMeal(SingleMeal newSingleMeal, Long oldSingleMealId, String clientUsername, String trainerUsername);
+	
+	String createComment(Long foodRowId, String comment);
 }

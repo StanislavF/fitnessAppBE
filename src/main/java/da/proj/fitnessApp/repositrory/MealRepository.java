@@ -21,4 +21,6 @@ public interface MealRepository {
 	List<FoodRow> readFoodRowsForSM(Long singleMealId);
 
 	void deleteSingleMeal(Long singleMealId);
+	
+	void createComment(Long foodRowId, String comment);
 }

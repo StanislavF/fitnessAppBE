@@ -154,5 +154,15 @@ public class MealRepositoryImpl implements MealRepository {
 		this.jdbcTemplate.update(SQL.DELETE_SINGLE_MEAL, parameters);
 
 	}
+	
+	@Override
+	public void createComment(Long foodRowId, String comment) {
+
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("fr_id", foodRowId)
+				.addValue("fr_comment", comment);
+
+		this.jdbcTemplate.update(SQL.CREATE_FR_COMMENT, parameters);
+	}
 
 }

@@ -73,5 +73,16 @@ public class MealController {
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
 				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
 	}
+	
+	@RequestMapping(value = "/comment/create", method = RequestMethod.PUT)
+	public ResponseEntity<String> createComment(@RequestParam String clientUsername, @RequestParam Long foodRowId,
+			@RequestParam String comment) {
+
+		// ToDo check if trainingDay is of the user
+		String responseText = this.mealService.createComment(foodRowId, comment);
+
+		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
+				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
+	}
 
 }

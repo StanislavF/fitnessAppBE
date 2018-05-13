@@ -114,5 +114,19 @@ public class MealServiceImpl implements MealService {
 
 		return missingFoods;
 	}
+	
+	@Override
+	public String createComment(Long foodRowId, String comment) {
+		if (foodRowId == null || comment == null || comment.isEmpty()) {
+			return null;
+		}
+		try {
+			this.mealRepository.createComment(foodRowId, comment);
+			return "CREATED";
+		} catch (Exception ex) {
+			return "ERROR";
+		}
+
+	}
 
 }
