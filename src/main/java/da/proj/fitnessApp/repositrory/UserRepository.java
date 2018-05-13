@@ -12,7 +12,7 @@ public interface UserRepository {
 	
 	User readUserByUsername (String username);
 	
-	boolean checkTrainerClient(Long trainerId, String clientUsername);
+	String checkTrainerClient(Long trainerId, String clientUsername);
 	
 	List<SearchUser> readUsers(SearchData data);
 	
@@ -29,4 +29,11 @@ public interface UserRepository {
 	List<String> readClientsUsername(Long trainerId);
 	
 	List<String> readTrainersUsername(Long clientId);
+	
+	void cancelTrainerClient(Long clientId, Long trainerId);
+	
+	void removeClientFromTrainerVisability(Long clientId, Long trainerId);
+	
+	void removeTrainerFromClientVisability(Long clientId, Long trainerId);
+
 }

@@ -13,6 +13,7 @@ import da.proj.fitnessApp.models.SearchData;
 import da.proj.fitnessApp.models.SearchUser;
 import da.proj.fitnessApp.models.TrainerClientRequest;
 import da.proj.fitnessApp.models.User;
+import da.proj.fitnessApp.models.enums.RequestStatusEnum;
 import da.proj.fitnessApp.repositrory.UserRepository;
 
 @Service
@@ -49,17 +50,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Transactional
-	public boolean isTrainerAuthorised(String trainerUsername, String clientUsername) {
+	public String getTrainerClientStatus(String trainerUsername, String clientUsername) {
 
-		boolean is_authorised = false;
 		User trainer = this.userRepository.readUserByUsername(trainerUsername);
+		String request_status = null;
+		if (trainer.getIsTrainer().equals(true)) {
+			request_status = this.userRepository.checkTrainerClient(trainer.getId(), clientUsername);
+		}
 
-		if (trainer.getIsTrainer().equals(true)
-				&& this.userRepository.checkTrainerClient(trainer.getId(), clientUsername)) {
-			is_authorised = true;
-		} 
-
-		return is_authorised;
+		return request_status;
 	}
 
 	public List<SearchUser> searchUsers(SearchData data) {
@@ -138,6 +137,7 @@ public class UserServiceImpl implements UserService {
 
 			return true;
 		} catch (Exception ex) {
+			
 			return false;
 		}
 	}
@@ -146,38 +146,95 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public List<String> getClientsUsername(String trainerUsername) {
 
-		if(trainerUsername == null || trainerUsername.isEmpty()) {
+		if (trainerUsername == null || trainerUsername.isEmpty()) {
 			return null;
 		}
-		
+
 		Long trainerId = this.userRepository.readUserByUsername(trainerUsername).getId();
-		
+
 		return this.userRepository.readClientsUsername(trainerId);
-		
+
 	}
 
 	@Override
 	public List<String> getTrainersUsername(String clientUsername) {
-		
-		if(clientUsername == null || clientUsername.isEmpty()) {
+
+		if (clientUsername == null || clientUsername.isEmpty()) {
 			return null;
 		}
-		
+
 		Long clientId = this.userRepository.readUserByUsername(clientUsername).getId();
-		
+
 		return this.userRepository.readTrainersUsername(clientId);
-		
+
 	}
 
 	@Override
 	public User getUserDataByUsername(String username) {
+
+		if (username == null || username.isEmpty()) {
+			return null;
+		}
+
+		return this.userRepository.readUserByUsername(username);
+	}
+
+	@Override
+	public ResponseEntity<String> createUnauthorizedTrainerResponse(String authResponse) {
+		if (authResponse == null || authResponse.equals(RequestStatusEnum.REQUESTED.getValue())
+				|| authResponse.equals(RequestStatusEnum.REJECTED.getValue())) {
+			return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+		} else if (authResponse.equals(RequestStatusEnum.CANCELED.getValue())) {
+			return new ResponseEntity<String>(HttpStatus.FORBIDDEN);
+		}
 		
-		if(username == null || username.isEmpty()) {
+		return null;
+	}
+
+	@Override
+	public String cancelTrainerClient(String clientUsername, String trainerUsername) {
+		if (clientUsername == null || clientUsername.isEmpty() || trainerUsername == null
+				|| trainerUsername.isEmpty()) {
 			return null;
 		}
 		
-		return this.userRepository.readUserByUsername(username);
+		Long clientId = this.userRepository.readUserByUsername(clientUsername).getId();
+		Long trainerId = this.userRepository.readUserByUsername(trainerUsername).getId();
+
+		this.userRepository.cancelTrainerClient(clientId, trainerId);
+		
+		return "OK";
+
 	}
-	
-	
+
+	@Override
+	public String removeClientFromTrainerVisability(String clientUsername, String trainerUsername) {
+		if (clientUsername == null || clientUsername.isEmpty() || trainerUsername == null
+				|| trainerUsername.isEmpty()) {
+			return null;
+		}
+		
+		Long clientId = this.userRepository.readUserByUsername(clientUsername).getId();
+		Long trainerId = this.userRepository.readUserByUsername(trainerUsername).getId();
+
+		this.userRepository.removeClientFromTrainerVisability(clientId, trainerId);
+		
+		return "OK";
+	}
+
+	@Override
+	public String removeTrainerFromClientVisability(String clientUsername, String trainerUsername) {
+		if (clientUsername == null || clientUsername.isEmpty() || trainerUsername == null
+				|| trainerUsername.isEmpty()) {
+			return null;
+		}
+		
+		Long clientId = this.userRepository.readUserByUsername(clientUsername).getId();
+		Long trainerId = this.userRepository.readUserByUsername(trainerUsername).getId();
+
+		this.userRepository.removeTrainerFromClientVisability(clientId, trainerId);
+		
+		return "OK";
+	}
+
 }

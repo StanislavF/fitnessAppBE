@@ -32,7 +32,7 @@ import da.proj.fitnessApp.utils.SQL;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
-	
+
 	@Value("${date.format}")
 	private String dateFormat;
 
@@ -45,8 +45,8 @@ public class UserRepositoryImpl implements UserRepository {
 	private void postConstruct() {
 		jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
-	
-	private String WILDCARD="%";
+
+	private String WILDCARD = "%";
 
 	public Long createUser(User user) {
 
@@ -101,19 +101,19 @@ public class UserRepositoryImpl implements UserRepository {
 
 	}
 
-	public boolean checkTrainerClient(Long trainerId, String clientUsername) {
+	public String checkTrainerClient(Long trainerId, String clientUsername) {
 
-		SqlParameterSource parameters = new MapSqlParameterSource()
-				.addValue("trainer_id", String.valueOf(trainerId))
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("trainer_id", String.valueOf(trainerId))
 				.addValue("client_username", clientUsername)
-				.addValue("tc_request_status", RequestStatusEnum.ACCEPTED.getValue());
+				.addValue("tc_request_status_accepted", RequestStatusEnum.ACCEPTED.getValue())
+				.addValue("tc_request_status_canceled", RequestStatusEnum.CANCELED.getValue());
 
 		try {
-		return this.jdbcTemplate.queryForObject(SQL.CHECK_TRAINER_CLIENT, parameters, (rs, rowNum) -> {
-			return true;
-		});
+			return this.jdbcTemplate.queryForObject(SQL.CHECK_TRAINER_CLIENT, parameters, (rs, rowNum) -> {
+				return rs.getString("tc_request_status");
+			});
 		} catch (EmptyResultDataAccessException ex) {
-			return false;
+			return null;
 		}
 
 	}
@@ -130,12 +130,10 @@ public class UserRepositoryImpl implements UserRepository {
 				.addValue("last_name_flag", data.getLastName() != null ? 0 : 1)
 				.addValue("usr_lastname", WILDCARD + data.getLastName() + WILDCARD)
 				.addValue("from_age_flag", data.getFromAge() != null ? 0 : 1)
-				.addValue("usr_from_age", data.getFromAge())
-				.addValue("to_age_flag", data.getToAge() != null ? 0 : 1)
+				.addValue("usr_from_age", data.getFromAge()).addValue("to_age_flag", data.getToAge() != null ? 0 : 1)
 				.addValue("usr_to_age", data.getToAge())
 				.addValue("is_trainer_flag", data.getIsTrainer() != null ? 0 : 1)
-				.addValue("usr_is_trainer", data.getIsTrainer())
-				.addValue("sex_flag", data.getSex() != null ? 0 : 1)
+				.addValue("usr_is_trainer", data.getIsTrainer()).addValue("sex_flag", data.getSex() != null ? 0 : 1)
 				.addValue("usr_sex", data.getSex());
 
 		this.jdbcTemplate.query(SQL.READ_USERS, parameters, (rs, rowNum) -> {
@@ -149,30 +147,28 @@ public class UserRepositoryImpl implements UserRepository {
 
 			return user;
 		});
-		
+
 		return result;
 
 	}
-	
+
 	public Long requestTrainer(Long trainerId, Long clientId) {
-		
+
 		DateFormat df = new SimpleDateFormat(this.dateFormat);
 		Date dateobj = new Date();
-		
-		SqlParameterSource parameters = new MapSqlParameterSource()
-				.addValue("tc_trainer_id", trainerId)
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("tc_trainer_id", trainerId)
 				.addValue("tc_client_id", clientId)
 				.addValue("tc_request_status", RequestStatusEnum.REQUESTED.getValue())
 				.addValue("tc_request_sent_date", df.format(dateobj));
-				
-				
+
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 
 		this.jdbcTemplate.update(SQL.INSERT_TC_REQUEST, parameters, keyHolder);
 
 		return keyHolder.getKey().longValue();
 	}
-	
+
 	public String checkForExistingRequests(Long trainerId, Long clientId) {
 
 		try {
@@ -190,15 +186,14 @@ public class UserRepositoryImpl implements UserRepository {
 		}
 
 	}
-	
-	public List<SearchUser> readClientRequestUsers(String trainerUsername){
-		
+
+	public List<SearchUser> readClientRequestUsers(String trainerUsername) {
+
 		List<SearchUser> result = new ArrayList<>();
-		
-		SqlParameterSource parameters = new MapSqlParameterSource()
-				.addValue("usr_trainer_username", trainerUsername)
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("usr_trainer_username", trainerUsername)
 				.addValue("requested", RequestStatusEnum.REQUESTED.getValue());
-		
+
 		this.jdbcTemplate.query(SQL.READ_CLIENT_REQUEST_USERS, parameters, (rs, rowNum) -> {
 			SearchUser user = new SearchUser();
 			user.setUsername(rs.getString("usr_username"));
@@ -210,55 +205,89 @@ public class UserRepositoryImpl implements UserRepository {
 
 			return user;
 		});
-		
+
 		return result;
-		
+
 	}
 
 	@Override
 	public void acceptClientRequest(Long trainerId, Long clientId) {
-		
-		SqlParameterSource parameters = new MapSqlParameterSource()
-				.addValue("tc_trainer_id", trainerId)
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("tc_trainer_id", trainerId)
 				.addValue("tc_client_id", clientId)
 				.addValue("tc_request_status", RequestStatusEnum.ACCEPTED.getValue());
 
 		this.jdbcTemplate.update(SQL.UPDATE_TC_REQUEST_STATUS, parameters);
-		
+
 	}
 
 	@Override
 	public void rejectClientRequest(Long trainerId, Long clientId) {
-		
-		SqlParameterSource parameters = new MapSqlParameterSource()
-				.addValue("tc_trainer_id", trainerId)
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("tc_trainer_id", trainerId)
 				.addValue("tc_client_id", clientId)
-				.addValue("tc_request_status", RequestStatusEnum.REJECTED.getValue());
+				.addValue("new_tc_request_status", RequestStatusEnum.REJECTED.getValue())
+				.addValue("old_tc_request_status", RequestStatusEnum.REQUESTED.getValue());
 
 		this.jdbcTemplate.update(SQL.UPDATE_TC_REQUEST_STATUS, parameters);
-		
+
 	}
 
 	@Override
 	public List<String> readClientsUsername(Long trainerId) {
-		
-		SqlParameterSource parameters = new MapSqlParameterSource()
-				.addValue("tc_trainer_id", trainerId)
-				.addValue("tc_request_status", RequestStatusEnum.ACCEPTED.getValue());
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("tc_trainer_id", trainerId)
+				.addValue("tc_request_status_accepted", RequestStatusEnum.ACCEPTED.getValue())
+				.addValue("tc_request_status_canceled", RequestStatusEnum.CANCELED.getValue());
 
 		return this.jdbcTemplate.queryForList(SQL.READ_CLIENTS, parameters, String.class);
 	}
 
 	@Override
 	public List<String> readTrainersUsername(Long clientId) {
-		
-		SqlParameterSource parameters = new MapSqlParameterSource()
-				.addValue("tc_client_id", clientId)
-				.addValue("tc_request_status", RequestStatusEnum.ACCEPTED.getValue());
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("tc_client_id", clientId)
+				.addValue("tc_request_status_accepted", RequestStatusEnum.ACCEPTED.getValue())
+				.addValue("tc_request_status_canceled", RequestStatusEnum.CANCELED.getValue());
 
 		return this.jdbcTemplate.queryForList(SQL.READ_TRAINERS, parameters, String.class);
 	}
-	
-	
+
+	@Override
+	public void cancelTrainerClient(Long clientId, Long trainerId) {
+
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("tc_trainer_id", trainerId)
+				.addValue("tc_client_id", clientId)
+				.addValue("new_tc_request_status", RequestStatusEnum.CANCELED.getValue())
+				.addValue("old_tc_request_status", RequestStatusEnum.ACCEPTED.getValue());
+
+		this.jdbcTemplate.update(SQL.UPDATE_TC_REQUEST_STATUS, parameters);
+
+	}
+
+	@Override
+	public void removeClientFromTrainerVisability(Long clientId, Long trainerId) {
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("tc_trainer_id", trainerId)
+				.addValue("tc_client_id", clientId)
+				.addValue("tc_request_status", RequestStatusEnum.CANCELED.getValue())
+				.addValue("tc_is_visible_trainer", 0);
+
+		this.jdbcTemplate.update(SQL.UPDATE_TC_UNSET_IS_VISIBLE_TRAINER, parameters);
+		
+	}
+
+	@Override
+	public void removeTrainerFromClientVisability(Long clientId, Long trainerId) {
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("tc_trainer_id", trainerId)
+				.addValue("tc_client_id", clientId)
+				.addValue("tc_request_status", RequestStatusEnum.CANCELED.getValue())
+				.addValue("tc_is_visible_client", 0);
+
+		this.jdbcTemplate.update(SQL.UPDATE_TC_UNSET_IS_VISIBLE_CLIENT, parameters);
+		
+	}
 
 }

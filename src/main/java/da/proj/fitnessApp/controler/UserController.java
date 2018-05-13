@@ -125,5 +125,45 @@ public class UserController {
 		return response != null ? new ResponseEntity<User>(response, HttpStatus.OK)
 				: new ResponseEntity<User>(response, HttpStatus.NOT_FOUND);
 	}
+	
+	@RequestMapping(value = "/cancel-trainer-cliet", method = RequestMethod.PUT)
+	public ResponseEntity<String> cancelTrainerClient(@RequestParam String trainerUsername,
+			@RequestParam String clientUsername) {
+
+		String response = this.userService.cancelTrainerClient(clientUsername, trainerUsername);
+
+		return response != null ? new ResponseEntity<String>(response, HttpStatus.OK)
+				: new ResponseEntity<String>(response, HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(value = "/get-trainer-cliet-status", method = RequestMethod.GET)
+	public ResponseEntity<String> getTrainerClientStatus(@RequestParam String trainerUsername,
+			@RequestParam String clientUsername) {
+
+		String response = this.userService.getTrainerClientStatus(trainerUsername, clientUsername);
+
+		return response != null ? new ResponseEntity<String>(response, HttpStatus.OK)
+				: new ResponseEntity<String>(response, HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(value = "/remove-client-from-trainer-visability", method = RequestMethod.PUT)
+	public ResponseEntity<String> removeClientFromTrainerVisability(@RequestParam String trainerUsername,
+			@RequestParam String clientUsername) {
+
+		String response = this.userService.removeClientFromTrainerVisability(clientUsername, trainerUsername);
+
+		return response != null ? new ResponseEntity<String>(response, HttpStatus.OK)
+				: new ResponseEntity<String>(response, HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(value = "/remove-trainer-from-client-visability", method = RequestMethod.PUT)
+	public ResponseEntity<String> removeTrainerFromClientVisability(@RequestParam String trainerUsername,
+			@RequestParam String clientUsername) {
+
+		String response = this.userService.removeTrainerFromClientVisability(clientUsername, trainerUsername);
+
+		return response != null ? new ResponseEntity<String>(response, HttpStatus.OK)
+				: new ResponseEntity<String>(response, HttpStatus.NOT_FOUND);
+	}
 
 }

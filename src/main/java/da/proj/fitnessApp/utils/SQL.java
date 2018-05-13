@@ -33,5 +33,8 @@ public class SQL {
 	public static final String UPDATE_TC_REQUEST_STATUS= SqlUtils.getClasspathResource(sqlPath, "UPDATE_TC_REQUEST_STATUS.sql");
 	public static final String READ_CLIENTS = SqlUtils.getClasspathResource(sqlPath, "READ_CLIENTS.sql");
 	public static final String READ_TRAINERS= SqlUtils.getClasspathResource(sqlPath, "READ_TRAINERS.sql");
+	public static final String UPDATE_TC_UNSET_IS_VISIBLE_CLIENT= SqlUtils.getClasspathResource(sqlPath, "UPDATE_TC_UNSET_IS_VISIBLE_CLIENT.sql");
+	public static final String UPDATE_TC_UNSET_IS_VISIBLE_TRAINER= SqlUtils.getClasspathResource(sqlPath, "UPDATE_TC_UNSET_IS_VISIBLE_TRAINER.sql");
 
+	
 }

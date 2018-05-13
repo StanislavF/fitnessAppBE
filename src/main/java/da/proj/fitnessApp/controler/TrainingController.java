@@ -18,7 +18,9 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 
 import da.proj.fitnessApp.models.Exercise;
 import da.proj.fitnessApp.models.ExerciseRow;
+import da.proj.fitnessApp.models.SingleMeal;
 import da.proj.fitnessApp.models.TrainingDay;
+import da.proj.fitnessApp.models.enums.RequestStatusEnum;
 import da.proj.fitnessApp.services.TrainingService;
 import da.proj.fitnessApp.services.UserService;
 
@@ -36,6 +38,14 @@ public class TrainingController {
 	public ResponseEntity<String> createTrainingDay(@RequestBody TrainingDay trainingDay,
 			@RequestParam String trainerUsername, @RequestParam String clientUsername) {
 
+		String authResponse = this.userService.getTrainerClientStatus(trainerUsername, clientUsername);
+
+		ResponseEntity<String> errorResponse = this.userService.createUnauthorizedTrainerResponse(authResponse);
+
+		if (errorResponse != null) {
+			return errorResponse;
+		}
+
 		String responseText = this.trainingService.createTrainingDay(trainingDay, clientUsername, trainerUsername);
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
@@ -46,7 +56,10 @@ public class TrainingController {
 	public ResponseEntity<List<TrainingDay>> getTrainingDays(@RequestParam String trainerUsername,
 			@RequestParam String clientUsername, @RequestParam String date) {
 
-		if (!this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
+		String authResponse = this.userService.getTrainerClientStatus(trainerUsername, clientUsername);
+		
+		if (authResponse == null || authResponse.equals(RequestStatusEnum.REQUESTED.getValue())
+				|| authResponse.equals(RequestStatusEnum.REJECTED.getValue())) {
 			return new ResponseEntity<List<TrainingDay>>(HttpStatus.UNAUTHORIZED);
 		}
 
@@ -61,8 +74,12 @@ public class TrainingController {
 	public ResponseEntity<String> deleteTrainingDay(@RequestParam("trainerUsername") String trainerUsername,
 			@RequestParam("clientUsername") String clientUsername, @RequestParam("trainingDayId") Long trainingDayId) {
 
-		if (!this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		String authResponse = this.userService.getTrainerClientStatus(trainerUsername, clientUsername);
+
+		ResponseEntity<String> errorResponse = this.userService.createUnauthorizedTrainerResponse(authResponse);
+
+		if (errorResponse != null) {
+			return errorResponse;
 		}
 
 		boolean isDeleted = this.trainingService.deleteTrainingDay(trainingDayId);
@@ -72,15 +89,24 @@ public class TrainingController {
 
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)
 	public ResponseEntity<String> updateTrainingDay(@RequestBody TrainingDay newTrainingDay,
-			@RequestParam Long oldTrainingDayId,
-			@RequestParam String trainerUsername, @RequestParam String clientUsername) {
+			@RequestParam Long oldTrainingDayId, @RequestParam String trainerUsername,
+			@RequestParam String clientUsername) {
 
-		String responseText = this.trainingService.updateTrainingDay(newTrainingDay, oldTrainingDayId, clientUsername, trainerUsername);
+		String authResponse = this.userService.getTrainerClientStatus(trainerUsername, clientUsername);
+
+		ResponseEntity<String> errorResponse = this.userService.createUnauthorizedTrainerResponse(authResponse);
+
+		if (errorResponse != null) {
+			return errorResponse;
+		}
+
+		String responseText = this.trainingService.updateTrainingDay(newTrainingDay, oldTrainingDayId, clientUsername,
+				trainerUsername);
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
 				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@RequestMapping(value = "/comment/create", method = RequestMethod.PUT)
 	public ResponseEntity<String> createComment(@RequestParam String clientUsername, @RequestParam Long exerciseRowId,
 			@RequestParam String comment) {

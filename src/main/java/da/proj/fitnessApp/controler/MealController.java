@@ -3,6 +3,7 @@ package da.proj.fitnessApp.controler;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import da.proj.fitnessApp.models.SingleMeal;
+import da.proj.fitnessApp.models.enums.RequestStatusEnum;
 import da.proj.fitnessApp.services.MealService;
 import da.proj.fitnessApp.services.UserService;
 
@@ -29,6 +31,14 @@ public class MealController {
 	public ResponseEntity<String> createSingleMeal(@RequestBody SingleMeal singleMeal,
 			@RequestParam String trainerUsername, @RequestParam String clientUsername) {
 
+		String authResponse = this.userService.getTrainerClientStatus(trainerUsername, clientUsername);
+
+		ResponseEntity<String> errorResponse  = this.userService.createUnauthorizedTrainerResponse(authResponse);
+		
+		if(errorResponse!=null) {
+			return errorResponse;
+		}
+		
 		String responseText = this.mealService.createSingleMeal(singleMeal, clientUsername, trainerUsername);
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
@@ -39,7 +49,10 @@ public class MealController {
 	public ResponseEntity<List<SingleMeal>> getSingleMeals(@RequestParam("trainerUsername") String trainerUsername,
 			@RequestParam("clientUsername") String clientUsername, @RequestParam("date") String date) {
 
-		if (!this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
+		String authResponse = this.userService.getTrainerClientStatus(trainerUsername, clientUsername);
+
+		if (authResponse == null || authResponse.equals(RequestStatusEnum.REQUESTED.getValue())
+				|| authResponse.equals(RequestStatusEnum.REJECTED.getValue())) {
 			return new ResponseEntity<List<SingleMeal>>(HttpStatus.UNAUTHORIZED);
 		}
 
@@ -53,8 +66,12 @@ public class MealController {
 	public ResponseEntity<String> deleteSingleMeal(@RequestParam String trainerUsername,
 			@RequestParam String clientUsername, @RequestParam Long singleMealId) {
 
-		if (!this.userService.isTrainerAuthorised(trainerUsername, clientUsername)) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		String authResponse = this.userService.getTrainerClientStatus(trainerUsername, clientUsername);
+
+		ResponseEntity<String> errorResponse  = this.userService.createUnauthorizedTrainerResponse(authResponse);
+		
+		if(errorResponse!=null) {
+			return errorResponse;
 		}
 
 		boolean isDeleted = this.mealService.deleteSingleMeal(singleMealId);
@@ -68,12 +85,21 @@ public class MealController {
 			@RequestParam("clientUsername") String clientUsername,
 			@RequestParam("trainerUsername") String trainerUsername) {
 
-		String responseText = this.mealService.updateSingleMeal(newSingleMeal, oldSingleMealId, clientUsername, trainerUsername);
+		String authResponse = this.userService.getTrainerClientStatus(trainerUsername, clientUsername);
+
+		ResponseEntity<String> errorResponse  = this.userService.createUnauthorizedTrainerResponse(authResponse);
+		
+		if(errorResponse!=null) {
+			return errorResponse;
+		}
+
+		String responseText = this.mealService.updateSingleMeal(newSingleMeal, oldSingleMealId, clientUsername,
+				trainerUsername);
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
 				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@RequestMapping(value = "/comment/create", method = RequestMethod.PUT)
 	public ResponseEntity<String> createComment(@RequestParam String clientUsername, @RequestParam Long foodRowId,
 			@RequestParam String comment) {
