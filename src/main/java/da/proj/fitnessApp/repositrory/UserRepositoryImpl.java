@@ -290,4 +290,26 @@ public class UserRepositoryImpl implements UserRepository {
 		
 	}
 
+	@Override
+	public void updateUser(User user) {
+
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("usr_firstname", user.getFirstName())
+				.addValue("usr_lastname", user.getLastName())
+				.addValue("usr_is_trainer", user.getIsTrainer())
+				.addValue("usr_age", user.getAge())
+				.addValue("usr_weight", user.getWheight())
+				.addValue("usr_height", user.getHeight())
+				.addValue("usr_phone", user.getPhone())
+				.addValue("usr_goal", user.getGoal())
+				.addValue("usr_description", user.getDescription())
+				.addValue("usr_img", user.getImage())
+				.addValue("usr_id", user.getId());
+
+
+		this.jdbcTemplate.update(SQL.CREATE_USER, parameters);
+
+		
+	}
+
 }

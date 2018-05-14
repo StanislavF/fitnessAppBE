@@ -28,4 +28,5 @@ public interface UserService {
 	String cancelTrainerClient(String clientUsername, String trainerUsername);
 	String removeClientFromTrainerVisability(String clientUsername, String trainerUsername);
 	String removeTrainerFromClientVisability(String clientUsername, String trainerUsername);
+	String updateUser(User user);
 }

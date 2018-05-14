@@ -165,5 +165,14 @@ public class UserController {
 		return response != null ? new ResponseEntity<String>(response, HttpStatus.OK)
 				: new ResponseEntity<String>(response, HttpStatus.NOT_FOUND);
 	}
+	
+	@RequestMapping(value = "/update-user", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateUser(@RequestParam User user {
+
+		String response = this.userService.updateUser(user);
+				
+		return response != null ? new ResponseEntity<String>(response, HttpStatus.OK)
+				: new ResponseEntity<String>(response, HttpStatus.NOT_FOUND);
+	}
 
 }

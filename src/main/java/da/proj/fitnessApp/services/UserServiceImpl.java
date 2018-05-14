@@ -237,4 +237,16 @@ public class UserServiceImpl implements UserService {
 		return "OK";
 	}
 
+	@Override
+	public String updateUser(User user) {
+		
+		if(user == null) {
+			return null;
+		}
+		
+		this.userRepository.updateUser(user);
+		
+		return "OK";
+	}
+
 }

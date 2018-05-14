@@ -35,5 +35,6 @@ public interface UserRepository {
 	void removeClientFromTrainerVisability(Long clientId, Long trainerId);
 	
 	void removeTrainerFromClientVisability(Long clientId, Long trainerId);
-
+	
+	void updateUser(User user);
 }
