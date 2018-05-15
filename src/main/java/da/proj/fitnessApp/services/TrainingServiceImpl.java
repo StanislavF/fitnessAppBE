@@ -134,4 +134,10 @@ public class TrainingServiceImpl implements TrainingService {
 		}
 
 	}
+
+	@Override
+	public List<Exercise> getAllExercises() {
+
+		return this.trainingRepository.readAllExercises();
+	}
 }

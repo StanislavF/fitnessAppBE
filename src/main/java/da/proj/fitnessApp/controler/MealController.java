@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import da.proj.fitnessApp.models.Exercise;
+import da.proj.fitnessApp.models.Food;
 import da.proj.fitnessApp.models.SingleMeal;
 import da.proj.fitnessApp.models.enums.RequestStatusEnum;
 import da.proj.fitnessApp.services.MealService;
@@ -109,6 +111,16 @@ public class MealController {
 
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
 				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
+	}
+	
+	@RequestMapping(value = "/foods/get", method = RequestMethod.GET)
+	public ResponseEntity<List<Food>> getAllFoods() {
+
+		// ToDo check if trainingDay is of the user
+		List<Food> responseText = this.mealService.getAllFoods();
+
+		return responseText != null ? new ResponseEntity<List<Food>>(responseText, HttpStatus.OK)
+				: new ResponseEntity<List<Food>>(responseText, HttpStatus.BAD_REQUEST);
 	}
 
 }

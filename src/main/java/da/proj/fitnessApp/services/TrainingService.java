@@ -15,4 +15,6 @@ public interface TrainingService {
 	String updateTrainingDay(TrainingDay newTrainingDay, Long oldTrainingDayId, String clientUsername, String trainerUsername);
 	
 	String createComment(Long exerciseRowId, String comment);
+	
+	List<Exercise> getAllExercises();
 }

@@ -2,6 +2,7 @@ package da.proj.fitnessApp.services;
 
 import java.util.List;
 
+import da.proj.fitnessApp.models.Food;
 import da.proj.fitnessApp.models.SingleMeal;
 
 
@@ -16,4 +17,6 @@ public interface MealService {
 	String updateSingleMeal(SingleMeal newSingleMeal, Long oldSingleMealId, String clientUsername, String trainerUsername);
 	
 	String createComment(Long foodRowId, String comment);
+	
+	List<Food> getAllFoods();
 }

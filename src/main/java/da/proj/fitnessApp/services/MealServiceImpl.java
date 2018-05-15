@@ -129,4 +129,10 @@ public class MealServiceImpl implements MealService {
 
 	}
 
+	@Override
+	public List<Food> getAllFoods() {
+
+		return this.mealRepository.readAllFoods();
+	}
+
 }

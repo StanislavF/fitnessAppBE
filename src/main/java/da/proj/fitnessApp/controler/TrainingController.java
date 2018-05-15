@@ -117,5 +117,15 @@ public class TrainingController {
 		return responseText != null ? new ResponseEntity<String>(responseText, HttpStatus.OK)
 				: new ResponseEntity<String>(responseText, HttpStatus.BAD_REQUEST);
 	}
+	
+	@RequestMapping(value = "/exercises/get", method = RequestMethod.GET)
+	public ResponseEntity<List<Exercise>> getAllExercises() {
+
+		// ToDo check if trainingDay is of the user
+		List<Exercise> responseText = this.trainingService.getAllExercises();
+
+		return responseText != null ? new ResponseEntity<List<Exercise>>(responseText, HttpStatus.OK)
+				: new ResponseEntity<List<Exercise>>(responseText, HttpStatus.BAD_REQUEST);
+	}
 
 }

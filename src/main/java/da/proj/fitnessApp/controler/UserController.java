@@ -167,7 +167,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/update-user", method = RequestMethod.PUT)
-	public ResponseEntity<String> updateUser(@RequestParam User user {
+	public ResponseEntity<String> updateUser(@RequestParam User user) {
 
 		String response = this.userService.updateUser(user);
 				
