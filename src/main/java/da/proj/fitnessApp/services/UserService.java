@@ -29,4 +29,6 @@ public interface UserService {
 	String removeClientFromTrainerVisability(String clientUsername, String trainerUsername);
 	String removeTrainerFromClientVisability(String clientUsername, String trainerUsername);
 	String updateUser(User user);
+	String updateUserPassword(String username, String oldPassowrd, String newPassword);
+	String updateUserEmail(String username, String password, String email);
 }

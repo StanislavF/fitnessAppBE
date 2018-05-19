@@ -249,4 +249,31 @@ public class UserServiceImpl implements UserService {
 		return "OK";
 	}
 
+	@Override
+	public String updateUserPassword(String username, String oldPassowrd, String newPassword) {
+		
+		User user = this.getUserDataByUsername(username);
+		
+		if(user.getPassword().equals(oldPassowrd)) {
+			this.userRepository.updatePassword(username, newPassword);
+			
+			return "OK";
+		}
+		
+		return "ERROR";
+	}
+
+	@Override
+	public String updateUserEmail(String username, String password, String email) {
+		User user = this.getUserDataByUsername(username);
+		
+		if(user.getPassword().equals(password)) {
+			this.userRepository.updateEmail(username, email);
+			
+			return "OK";
+		}
+		
+		return "ERROR";
+	}
+
 }

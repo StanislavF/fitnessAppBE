@@ -54,7 +54,7 @@ public class UserRepositoryImpl implements UserRepository {
 				.addValue("usr_firstname", user.getFirstName()).addValue("usr_lastname", user.getLastName())
 				.addValue("usr_email", user.getEmail()).addValue("usr_is_trainer", user.getIsTrainer())
 				.addValue("usr_password", user.getPassword()).addValue("usr_age", user.getAge())
-				.addValue("usr_weight", user.getWheight()).addValue("usr_height", user.getHeight())
+				.addValue("usr_weight", user.getWeight()).addValue("usr_height", user.getHeight())
 				.addValue("usr_phone", user.getPhone()).addValue("usr_goal", user.getGoal())
 				.addValue("usr_description", user.getDescription());
 
@@ -80,7 +80,7 @@ public class UserRepositoryImpl implements UserRepository {
 				user.setEmail(rs.getString("usr_email"));
 				user.setIsTrainer(rs.getBoolean("usr_is_trainer"));
 				user.setPassword(rs.getString("usr_password"));
-				user.setWheight(rs.getInt("usr_weight"));
+				user.setWeight(rs.getInt("usr_weight"));
 				user.setHeight(rs.getInt("usr_height"));
 				user.setPhone(rs.getString("usr_phone"));
 				String goal = rs.getString("usr_goal");
@@ -298,18 +298,38 @@ public class UserRepositoryImpl implements UserRepository {
 				.addValue("usr_lastname", user.getLastName())
 				.addValue("usr_is_trainer", user.getIsTrainer())
 				.addValue("usr_age", user.getAge())
-				.addValue("usr_weight", user.getWheight())
+				.addValue("usr_sex",  user.getSex()!=null ? user.getSex().getValue() : null)
+				.addValue("usr_weight", user.getWeight())
 				.addValue("usr_height", user.getHeight())
 				.addValue("usr_phone", user.getPhone())
 				.addValue("usr_goal", user.getGoal())
 				.addValue("usr_description", user.getDescription())
-				.addValue("usr_img", user.getImage())
+				.addValue("usr_image", user.getImage())
 				.addValue("usr_id", user.getId());
 
 
-		this.jdbcTemplate.update(SQL.CREATE_USER, parameters);
+		this.jdbcTemplate.update(SQL.UPDATE_USER, parameters);
 
 		
+	}
+
+	@Override
+	public void updatePassword(String username, String password) {
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("usr_username", username)
+				.addValue("usr_password", password);
+		
+		this.jdbcTemplate.update(SQL.UPDATE_PASSWORD, parameters);
+		
+	}
+
+	@Override
+	public void updateEmail(String username, String email) {
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("usr_username", username)
+				.addValue("usr_email", email);
+		
+		this.jdbcTemplate.update(SQL.UPDATE_EMAIL, parameters);
 	}
 
 }

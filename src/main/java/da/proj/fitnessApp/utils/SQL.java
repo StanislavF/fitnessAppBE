@@ -36,6 +36,8 @@ public class SQL {
 	public static final String READ_TRAINERS= SqlUtils.getClasspathResource(sqlPath, "READ_TRAINERS.sql");
 	public static final String UPDATE_TC_UNSET_IS_VISIBLE_CLIENT= SqlUtils.getClasspathResource(sqlPath, "UPDATE_TC_UNSET_IS_VISIBLE_CLIENT.sql");
 	public static final String UPDATE_TC_UNSET_IS_VISIBLE_TRAINER= SqlUtils.getClasspathResource(sqlPath, "UPDATE_TC_UNSET_IS_VISIBLE_TRAINER.sql");
+	public static final String UPDATE_PASSWORD= SqlUtils.getClasspathResource(sqlPath, "UPDATE_PASSWORD.sql");
+	public static final String UPDATE_EMAIL= SqlUtils.getClasspathResource(sqlPath, "UPDATE_EMAIL.sql");
 
 	
 }

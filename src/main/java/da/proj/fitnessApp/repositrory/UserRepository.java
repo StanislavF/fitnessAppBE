@@ -37,4 +37,8 @@ public interface UserRepository {
 	void removeTrainerFromClientVisability(Long clientId, Long trainerId);
 	
 	void updateUser(User user);
+	
+	void updatePassword(String username, String password);
+	
+	void updateEmail(String username, String password);
 }

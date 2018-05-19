@@ -18,7 +18,7 @@ public class User {
     private SexEnum sex;
     private String email;
     private String phone;
-    private Integer wheight;
+    private Integer weight;
     private Integer height;
     private GoalEnum goal;
     private Boolean isTrainer;
@@ -84,11 +84,11 @@ public class User {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	public Integer getWheight() {
-		return wheight;
+	public Integer getWeight() {
+		return weight;
 	}
-	public void setWheight(Integer wheight) {
-		this.wheight = wheight;
+	public void setWeight(Integer weight) {
+		this.weight = weight;
 	}
 	public Integer getHeight() {
 		return height;

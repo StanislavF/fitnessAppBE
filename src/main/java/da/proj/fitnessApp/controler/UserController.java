@@ -167,11 +167,31 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/update-user", method = RequestMethod.PUT)
-	public ResponseEntity<String> updateUser(@RequestParam User user) {
+	public ResponseEntity<String> updateUser(@RequestBody User user) {
 
 		String response = this.userService.updateUser(user);
 				
 		return response != null ? new ResponseEntity<String>(response, HttpStatus.OK)
+				: new ResponseEntity<String>(response, HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(value = "/update-user/password", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateUserPassowrd(@RequestParam String username,
+			@RequestParam String oldPassword, @RequestParam String newPassword) {
+
+		String response = this.userService.updateUserPassword(username, oldPassword, newPassword);
+				
+		return response.equals("OK") ? new ResponseEntity<String>(response, HttpStatus.OK)
+				: new ResponseEntity<String>(response, HttpStatus.NOT_FOUND);
+	}
+	
+	@RequestMapping(value = "/update-user/email", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateUserEmail(@RequestParam String username,
+			@RequestParam String password, @RequestParam String email) {
+
+		String response = this.userService.updateUserEmail(username, password, email);
+				
+		return response.equals("OK") ? new ResponseEntity<String>(response, HttpStatus.OK)
 				: new ResponseEntity<String>(response, HttpStatus.NOT_FOUND);
 	}
 
