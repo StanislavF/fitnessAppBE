@@ -25,19 +25,21 @@ public class SQL {
 	public final static String CREATE_USER = SqlUtils.getClasspathResource(sqlPath, "CREATE_USER.sql");
 	public final static String READ_USER_USERNAME = SqlUtils.getClasspathResource(sqlPath, "READ_USER_USERNAME.sql");
 	public static final String READ_TD_USER = SqlUtils.getClasspathResource(sqlPath, "READ_TD_USER.sql");
-	public static final String READ_USERS = SqlUtils.getClasspathResource(sqlPath, "READ_USERS.sql");
-	public static final String UPDATE_USER = SqlUtils.getClasspathResource(sqlPath, "UPDATE_USER.sql");
 	
+	public static final String READ_USERS = SqlUtils.getClasspathResource(sqlPath, "READ_USERS.sql");
 	public static final String INSERT_TC_REQUEST = SqlUtils.getClasspathResource(sqlPath, "INSERT_TC_REQUEST.sql");
 	public static final String READ_CLIENT_REQUEST_USERS = SqlUtils.getClasspathResource(sqlPath, "READ_CLIENT_REQUEST_USERS.sql");
 	public static final String CHECK_EXISTING_CLIENT_REQUESTS = SqlUtils.getClasspathResource(sqlPath, "CHECK_EXISTING_CLIENT_REQUESTS.sql");
 	public static final String UPDATE_TC_REQUEST_STATUS= SqlUtils.getClasspathResource(sqlPath, "UPDATE_TC_REQUEST_STATUS.sql");
 	public static final String READ_CLIENTS = SqlUtils.getClasspathResource(sqlPath, "READ_CLIENTS.sql");
 	public static final String READ_TRAINERS= SqlUtils.getClasspathResource(sqlPath, "READ_TRAINERS.sql");
+	public static final String READ_IMAGE = SqlUtils.getClasspathResource(sqlPath, "READ_IMAGE.sql");
 	public static final String UPDATE_TC_UNSET_IS_VISIBLE_CLIENT= SqlUtils.getClasspathResource(sqlPath, "UPDATE_TC_UNSET_IS_VISIBLE_CLIENT.sql");
 	public static final String UPDATE_TC_UNSET_IS_VISIBLE_TRAINER= SqlUtils.getClasspathResource(sqlPath, "UPDATE_TC_UNSET_IS_VISIBLE_TRAINER.sql");
 	public static final String UPDATE_PASSWORD= SqlUtils.getClasspathResource(sqlPath, "UPDATE_PASSWORD.sql");
 	public static final String UPDATE_EMAIL= SqlUtils.getClasspathResource(sqlPath, "UPDATE_EMAIL.sql");
+	public static final String UPDATE_USER = SqlUtils.getClasspathResource(sqlPath, "UPDATE_USER.sql");
+	public static final String UPDATE_IMAGE = SqlUtils.getClasspathResource(sqlPath, "UPDATE_IMAGE.sql");
 
 	
 }

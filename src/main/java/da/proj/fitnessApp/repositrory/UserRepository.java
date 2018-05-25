@@ -1,6 +1,10 @@
 package da.proj.fitnessApp.repositrory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import da.proj.fitnessApp.models.SearchData;
 import da.proj.fitnessApp.models.SearchUser;
@@ -36,9 +40,13 @@ public interface UserRepository {
 	
 	void removeTrainerFromClientVisability(Long clientId, Long trainerId);
 	
-	void updateUser(User user);
+	void updateUser (User user);
+	
+	void updateImage (User user, InputStream image);
 	
 	void updatePassword(String username, String password);
 	
 	void updateEmail(String username, String password);
+	
+	InputStream readUserImage(String username);
 }

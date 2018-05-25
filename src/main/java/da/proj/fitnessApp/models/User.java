@@ -1,5 +1,6 @@
 package da.proj.fitnessApp.models;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +24,7 @@ public class User {
     private GoalEnum goal;
     private Boolean isTrainer;
     private String description;
-    private MultipartFile image;
+    private String image;
     private List<User> myClients;
     private List<User> myTrainers;
     private List<TrainingDay> myTrainingDays;
@@ -114,10 +115,10 @@ public class User {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public MultipartFile getImage() {
+	public String getImage() {
 		return image;
 	}
-	public void setImage(MultipartFile image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 	public List<User> getMyClients() {

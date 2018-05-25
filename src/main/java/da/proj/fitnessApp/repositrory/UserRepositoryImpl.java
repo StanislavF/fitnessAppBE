@@ -1,6 +1,9 @@
 package da.proj.fitnessApp.repositrory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.sql.Blob;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import da.proj.fitnessApp.models.SearchData;
 import da.proj.fitnessApp.models.SearchUser;
@@ -304,7 +308,6 @@ public class UserRepositoryImpl implements UserRepository {
 				.addValue("usr_phone", user.getPhone())
 				.addValue("usr_goal", user.getGoal())
 				.addValue("usr_description", user.getDescription())
-				.addValue("usr_image", user.getImage())
 				.addValue("usr_id", user.getId());
 
 
@@ -330,6 +333,31 @@ public class UserRepositoryImpl implements UserRepository {
 				.addValue("usr_email", email);
 		
 		this.jdbcTemplate.update(SQL.UPDATE_EMAIL, parameters);
+	}
+
+	@Override
+	public InputStream readUserImage(String username) {
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("usr_username", username);
+
+		try {
+			return this.jdbcTemplate.queryForObject(SQL.READ_IMAGE, parameters, (rs, rownum) -> {
+				Blob blob = rs.getBlob("usr_image");
+				
+				return blob.getBinaryStream();
+			});
+		} catch (EmptyResultDataAccessException ex) {
+			return null;
+		}
+	}
+
+	@Override
+	public void updateImage(User user, InputStream image) {
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("usr_image", image)
+				.addValue("usr_id", user.getId());
+		
+		this.jdbcTemplate.update(SQL.UPDATE_IMAGE, parameters);
+		
 	}
 
 }

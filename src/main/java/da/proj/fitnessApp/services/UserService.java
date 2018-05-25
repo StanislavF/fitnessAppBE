@@ -1,5 +1,6 @@
 package da.proj.fitnessApp.services;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public interface UserService {
 	String cancelTrainerClient(String clientUsername, String trainerUsername);
 	String removeClientFromTrainerVisability(String clientUsername, String trainerUsername);
 	String removeTrainerFromClientVisability(String clientUsername, String trainerUsername);
-	String updateUser(User user);
+	String updateUser(User user, InputStream image);
 	String updateUserPassword(String username, String oldPassowrd, String newPassword);
 	String updateUserEmail(String username, String password, String email);
 }

@@ -8,6 +8,5 @@ SET `usr_firstname`= :usr_firstname,
     `usr_height`= :usr_height,
     `usr_phone`= :usr_phone,
     `usr_goal`= :usr_goal,
-    `usr_description`= :usr_description,
-    `usr_image`= :usr_image 
+    `usr_description`= :usr_description
 WHERE `usr_id` = :usr_id

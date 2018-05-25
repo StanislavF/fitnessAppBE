@@ -1,5 +1,8 @@
 package da.proj.fitnessApp.services;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import da.proj.fitnessApp.models.LogInData;
 import da.proj.fitnessApp.models.SearchData;
@@ -175,8 +180,20 @@ public class UserServiceImpl implements UserService {
 		if (username == null || username.isEmpty()) {
 			return null;
 		}
+		
+		User user = this.userRepository.readUserByUsername(username);
 
-		return this.userRepository.readUserByUsername(username);
+		InputStream imageStram = this.userRepository.readUserImage(username);
+		byte[] imageByteArr = null;
+		try {
+			imageByteArr = StreamUtils.copyToByteArray(imageStram);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		user.setImage(imageByteArr != null ? Base64.getEncoder().encodeToString(imageByteArr) : null);
+		
+		return user;
 	}
 
 	@Override
@@ -238,13 +255,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String updateUser(User user) {
+	public String updateUser(User user, InputStream image) {
 		
 		if(user == null) {
 			return null;
 		}
 		
+		
 		this.userRepository.updateUser(user);
+		
+		if(image != null) {
+			this.userRepository.updateImage(user, image);
+		}
 		
 		return "OK";
 	}
