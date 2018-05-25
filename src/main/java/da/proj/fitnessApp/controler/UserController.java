@@ -178,7 +178,7 @@ public class UserController {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<String> updateUser(@RequestParam String user,
 			@RequestPart(required = false) MultipartFile image) {
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		User userObj = null;
 		InputStream imageStream = null;
@@ -192,7 +192,7 @@ public class UserController {
 
 		String response = this.userService.updateUser(userObj, imageStream);
 
-		return response != null ? new ResponseEntity<String>(response, HttpStatus.OK)
+		return response != null && response.equals("OK") ? new ResponseEntity<String>(response, HttpStatus.OK)
 				: new ResponseEntity<String>(response, HttpStatus.NOT_FOUND);
 	}
 

@@ -16,12 +16,12 @@ public class User {
     private String firstName;
     private String lastName;
     private Integer age;
-    private SexEnum sex;
+    private String sex;
     private String email;
     private String phone;
     private Integer weight;
     private Integer height;
-    private GoalEnum goal;
+    private String goal;
     private Boolean isTrainer;
     private String description;
     private String image;
@@ -67,10 +67,10 @@ public class User {
 	public void setAge(Integer age) {
 		this.age = age;
 	}
-	public SexEnum getSex() {
+	public String getSex() {
 		return sex;
 	}
-	public void setSex(SexEnum sex) {
+	public void setSex(String sex) {
 		this.sex = sex;
 	}
 	public String getEmail() {
@@ -97,10 +97,10 @@ public class User {
 	public void setHeight(Integer height) {
 		this.height = height;
 	}
-	public GoalEnum getGoal() {
+	public String getGoal() {
 		return goal;
 	}
-	public void setGoal(GoalEnum goal) {
+	public void setGoal(String goal) {
 		this.goal = goal;
 	}
 	public Boolean getIsTrainer() {

@@ -87,14 +87,9 @@ public class UserRepositoryImpl implements UserRepository {
 				user.setWeight(rs.getInt("usr_weight"));
 				user.setHeight(rs.getInt("usr_height"));
 				user.setPhone(rs.getString("usr_phone"));
-				String goal = rs.getString("usr_goal");
-				if (!rs.wasNull()) {
-					user.setGoal(GoalEnum.valueOf(goal));
-				}
-				String sex = rs.getString("usr_sex");
-				if (!rs.wasNull()) {
-					user.setSex(SexEnum.valueOf(sex));
-				}
+				user.setGoal(rs.getString("usr_goal"));
+				user.setSex(rs.getString("usr_sex"));
+				
 				user.setDescription(rs.getString("usr_description"));
 
 				return user;
@@ -302,7 +297,7 @@ public class UserRepositoryImpl implements UserRepository {
 				.addValue("usr_lastname", user.getLastName())
 				.addValue("usr_is_trainer", user.getIsTrainer())
 				.addValue("usr_age", user.getAge())
-				.addValue("usr_sex",  user.getSex()!=null ? user.getSex().getValue() : null)
+				.addValue("usr_sex",  user.getSex())
 				.addValue("usr_weight", user.getWeight())
 				.addValue("usr_height", user.getHeight())
 				.addValue("usr_phone", user.getPhone())

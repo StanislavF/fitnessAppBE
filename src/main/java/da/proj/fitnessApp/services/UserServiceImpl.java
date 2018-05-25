@@ -255,12 +255,26 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public String updateUser(User user, InputStream image) {
 		
 		if(user == null) {
 			return null;
 		}
 		
+		User oldUserData = this.userRepository.readUserByUsername(user.getUsername());
+		
+		if(oldUserData.getIsTrainer()==true && user.getIsTrainer()==false) {
+			List<String> clientsList = this.userRepository.readClientsUsername(user.getId());
+			if(clientsList!=null && !clientsList.isEmpty()) {
+				return "CLIENTS_EXIST";
+			} else {
+				List<SearchUser> requestsList = this.userRepository.readClientRequestUsers(user.getUsername());
+				if(requestsList!=null && !requestsList.isEmpty()) {
+					return "CLIENTS_REQUESTS_EXIST";
+				}
+			}
+		}
 		
 		this.userRepository.updateUser(user);
 		
