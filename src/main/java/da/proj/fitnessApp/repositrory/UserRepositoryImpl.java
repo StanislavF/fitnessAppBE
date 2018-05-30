@@ -212,9 +212,11 @@ public class UserRepositoryImpl implements UserRepository {
 	@Override
 	public void acceptClientRequest(Long trainerId, Long clientId) {
 
-		SqlParameterSource parameters = new MapSqlParameterSource().addValue("tc_trainer_id", trainerId)
+		SqlParameterSource parameters = new MapSqlParameterSource()
+				.addValue("tc_trainer_id", trainerId)
 				.addValue("tc_client_id", clientId)
-				.addValue("tc_request_status", RequestStatusEnum.ACCEPTED.getValue());
+				.addValue("new_tc_request_status", RequestStatusEnum.ACCEPTED.getValue())
+				.addValue("old_tc_request_status", RequestStatusEnum.REQUESTED.getValue());
 
 		this.jdbcTemplate.update(SQL.UPDATE_TC_REQUEST_STATUS, parameters);
 
@@ -338,7 +340,7 @@ public class UserRepositoryImpl implements UserRepository {
 			return this.jdbcTemplate.queryForObject(SQL.READ_IMAGE, parameters, (rs, rownum) -> {
 				Blob blob = rs.getBlob("usr_image");
 				
-				return blob.getBinaryStream();
+				return blob != null ?  blob.getBinaryStream() : null;
 			});
 		} catch (EmptyResultDataAccessException ex) {
 			return null;
