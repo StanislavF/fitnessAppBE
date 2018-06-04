@@ -135,4 +135,22 @@ public class MealServiceImpl implements MealService {
 		return this.mealRepository.readAllFoods();
 	}
 
+	@Override
+	@Transactional
+	public List<SingleMeal> copySingleMeals(String dateFrom, String dateTo,String clientUsername, String trainerUsername) {
+		
+		List<SingleMeal> singleMeals = this.getAllSingleMealsForUser(dateFrom, clientUsername, trainerUsername);
+		
+		if(singleMeals==null) {
+			return null;
+		}
+		
+		for(SingleMeal singleMeal : singleMeals) {
+			singleMeal.setDate(dateTo);
+			this.createSingleMeal(singleMeal, clientUsername, trainerUsername);
+		}
+		
+		return this.getAllSingleMealsForUser(dateTo, clientUsername, trainerUsername);
+	}
+
 }

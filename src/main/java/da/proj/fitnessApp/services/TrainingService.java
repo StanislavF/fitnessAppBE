@@ -17,4 +17,6 @@ public interface TrainingService {
 	String createComment(Long exerciseRowId, String comment);
 	
 	List<Exercise> getAllExercises();
+	
+	List<TrainingDay> copyTrainingDays(String dateFrom, String dateTo, String clientUsername, String trainerUsername);
 }

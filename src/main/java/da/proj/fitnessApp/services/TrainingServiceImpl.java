@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import da.proj.fitnessApp.models.Exercise;
 import da.proj.fitnessApp.models.ExerciseRow;
+import da.proj.fitnessApp.models.SingleMeal;
 import da.proj.fitnessApp.models.TrainingDay;
 import da.proj.fitnessApp.models.User;
 import da.proj.fitnessApp.repositrory.TrainingRepository;
@@ -139,5 +140,23 @@ public class TrainingServiceImpl implements TrainingService {
 	public List<Exercise> getAllExercises() {
 
 		return this.trainingRepository.readAllExercises();
+	}
+
+	@Override
+	@Transactional
+	public List<TrainingDay> copyTrainingDays(String dateFrom, String dateTo, String clientUsername,
+			String trainerUsername) {
+		List<TrainingDay> trainingDays = this.getAllTrainingDaysForUser(dateFrom, clientUsername, trainerUsername);
+
+		if (trainingDays == null) {
+			return null;
+		}
+
+		for (TrainingDay trainingDay : trainingDays) {
+			trainingDay.setDate(dateTo);
+			this.createTrainingDay(trainingDay, clientUsername, trainerUsername);
+		}
+
+		return this.getAllTrainingDaysForUser(dateTo, clientUsername, trainerUsername);
 	}
 }

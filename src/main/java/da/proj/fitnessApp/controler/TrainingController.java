@@ -1,11 +1,16 @@
 package da.proj.fitnessApp.controler;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +38,9 @@ public class TrainingController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Value("${week.date.format}")
+	private String weekDateFormat;
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	public ResponseEntity<String> createTrainingDay(@RequestBody TrainingDay trainingDay,
@@ -126,6 +134,39 @@ public class TrainingController {
 
 		return responseText != null ? new ResponseEntity<List<Exercise>>(responseText, HttpStatus.OK)
 				: new ResponseEntity<List<Exercise>>(responseText, HttpStatus.BAD_REQUEST);
+	}
+	
+	@RequestMapping(value = "/copy-prev-week", method = RequestMethod.POST)
+	public ResponseEntity<List<TrainingDay>> copyPrevWeekTD(@RequestParam String trainerUsername,
+			@RequestParam String clientUsername, @RequestParam String date) {
+
+		String authResponse = this.userService.getTrainerClientStatus(trainerUsername, clientUsername);
+
+		ResponseEntity<String> errorResponse  = this.userService.createUnauthorizedTrainerResponse(authResponse);
+		
+		if(errorResponse!=null) {
+			return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+				
+		SimpleDateFormat sdf = new SimpleDateFormat(this.weekDateFormat);
+		Date cuurentWeek = null;
+		try {
+			cuurentWeek = sdf.parse(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(cuurentWeek);
+		cal.add(Calendar.WEEK_OF_YEAR, -1);
+		Date prevWeek = null;
+		prevWeek = cal.getTime();
+		
+		String previousDateString = sdf.format(prevWeek);
+
+		List<TrainingDay> response = this.trainingService.copyTrainingDays(previousDateString, date, clientUsername, trainerUsername);
+
+		return response != null ?  new ResponseEntity<List<TrainingDay>>(response, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 }

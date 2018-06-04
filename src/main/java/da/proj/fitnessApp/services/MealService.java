@@ -19,4 +19,6 @@ public interface MealService {
 	String createComment(Long foodRowId, String comment);
 	
 	List<Food> getAllFoods();
+	
+	List<SingleMeal> copySingleMeals(String dateFrom, String dateTo, String clientUsername, String trainerUsername);
 }
