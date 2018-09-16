@@ -25,6 +25,7 @@ public class SQL {
 	public final static String CREATE_USER = SqlUtils.getClasspathResource(sqlPath, "CREATE_USER.sql");
 	public final static String READ_USER_USERNAME = SqlUtils.getClasspathResource(sqlPath, "READ_USER_USERNAME.sql");
 	public static final String READ_TD_USER = SqlUtils.getClasspathResource(sqlPath, "READ_TD_USER.sql");
+	public static final String REQUEST_CANCELED_TRAINER = SqlUtils.getClasspathResource(sqlPath, "REQUEST_CANCELED_TRAINER.sql");
 	
 	public static final String READ_USERS = SqlUtils.getClasspathResource(sqlPath, "READ_USERS.sql");
 	public static final String INSERT_TC_REQUEST = SqlUtils.getClasspathResource(sqlPath, "INSERT_TC_REQUEST.sql");

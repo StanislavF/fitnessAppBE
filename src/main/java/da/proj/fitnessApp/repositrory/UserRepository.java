@@ -22,6 +22,8 @@ public interface UserRepository {
 	
 	Long requestTrainer(Long trainerId, Long clientId);
 	
+	void requestCanceledTrainer(Long trainerId, Long clientId);
+	
 	List<SearchUser> readClientRequestUsers(String trainerUsername);
 	
 	String checkForExistingRequests(Long trainerId, Long clientId);

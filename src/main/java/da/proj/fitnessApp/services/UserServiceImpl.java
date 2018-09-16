@@ -35,10 +35,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public LogInData logIn(LogInData data) {
+		
+		if(data==null) {
+			return null;
+		}
 
 		User user = this.userRepository.readUserByUsername(data.getUsername());
 
-		if (user.getPassword().equals(data.getPassword())) {
+		if (user!=null && user.getPassword().equals(data.getPassword())) {
 			LogInData logInData = new LogInData();
 			logInData.setIsTrainer(user.getIsTrainer());
 			logInData.setUsername(user.getUsername());
@@ -88,6 +92,10 @@ public class UserServiceImpl implements UserService {
 
 		String result = this.userRepository.checkForExistingRequests(trainerId, clientId);
 
+		if(result.equals(RequestStatusEnum.CANCELED.getValue())) {
+			this.userRepository.requestCanceledTrainer(trainerId, clientId);
+		}
+			
 		if (result != null) {
 			return result;
 		} else {

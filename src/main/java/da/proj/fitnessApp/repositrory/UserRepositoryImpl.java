@@ -168,13 +168,26 @@ public class UserRepositoryImpl implements UserRepository {
 		return keyHolder.getKey().longValue();
 	}
 
+	
+	@Override
+	public void requestCanceledTrainer(Long trainerId, Long clientId) {
+
+		SqlParameterSource parameters = new MapSqlParameterSource().addValue("tc_trainer_id", trainerId)
+				.addValue("tc_client_id", clientId)
+				.addValue("new_tc_request_status", RequestStatusEnum.REQUESTED.getValue())
+				.addValue("old_tc_request_status", RequestStatusEnum.CANCELED.getValue());
+
+
+		this.jdbcTemplate.update(SQL.REQUEST_CANCELED_TRAINER, parameters);
+	}
+
 	public String checkForExistingRequests(Long trainerId, Long clientId) {
 
 		try {
 
 			SqlParameterSource parameters = new MapSqlParameterSource().addValue("tc_trainer_id", trainerId)
 					.addValue("tc_client_id", clientId).addValue("requested", RequestStatusEnum.REQUESTED.getValue())
-					.addValue("accepted", RequestStatusEnum.ACCEPTED.getValue());
+					.addValue("accepted", RequestStatusEnum.ACCEPTED.getValue()).addValue("canceled", RequestStatusEnum.CANCELED.getValue());
 
 			return this.jdbcTemplate.queryForObject(SQL.CHECK_EXISTING_CLIENT_REQUESTS, parameters, (rs, rowNum) -> {
 
